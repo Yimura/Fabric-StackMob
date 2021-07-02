@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "id": "stackmob",
+  "version": "${version}",
+
+  "name": "Stackmob",
+  "description": "This is an example description! Tell everyone what your mod is about!",
+  "authors": [
+    "Yimura"
+  ],
+  "contact": {
+    "homepage": "https://fabricmc.net/",
+    "sources": "https://github.com/FabricMC/fabric-example-mod"
+  },
+
+  "license": "MIT",
+  "icon": "assets/modid/icon.png",
+
+  "custom": {
+    "cardinal-components": [
+      "stackmob:stack_size"
+    ]
+  },
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "sh.damon.stackmob.StackMob"
+    ],
+    "cardinal-components-entity": [
+      "sh.damon.stackmob.StackMobComponent"
+    ]
+  },
+  "mixins": [
+    "stackmob.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.11.3",
+    "minecraft": "1.17.x",
+    "java": ">=16"
+  }
+}
