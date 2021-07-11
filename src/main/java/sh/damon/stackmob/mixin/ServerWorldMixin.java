@@ -18,14 +18,6 @@ import java.util.stream.Stream;
 
 @Mixin(ServerWorld.class)
 public class ServerWorldMixin {
-    @Inject(at = @At("RETURN"), method = "loadEntities")
-    public void addEntity(Stream<Entity> entities, CallbackInfo ci) {
-        ServerWorld world = (ServerWorld) (Object) this;
-
-        StackMob sm = StackMob.getInstance();
-        sm.entityManager.registerAll(world.iterateEntities());
-    }
-
     @Inject(at = @At("RETURN"), method = "spawnEntity")
     public void spawnEntity(Entity entity, CallbackInfoReturnable<Boolean> info) {
         if (entity instanceof MobEntity) {
