@@ -38,7 +38,7 @@ public class ServerWorldMixin {
 
                 StackEntity other = sm.entityManager.getStackedEntity((LivingEntity) ent);
                 if (other == null || !other.canStack()) continue;
-                if (sm.traitManager.checkTraits(original, other)) continue;
+                // if (sm.traitManager.checkTraits(original, other)) continue;
 
                 sm.entityManager.unregisterStackedEntity(
                     other.merge(original)
