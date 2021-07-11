@@ -12,3 +12,7 @@ This is a port of [StackMob-5](https://github.com/Nathat23/StackMob-5) SpigotPlu
 - [ ] Killing multiple entities depending on the damage given to the entity
 - [ ] Disabling AI for stacked entities
 - [ ] Wait before stacking (to not instantly attempt to stack and create load on the server)
+
+# License
+
+This project uses the same license from the fabric example mod Github Repo.
