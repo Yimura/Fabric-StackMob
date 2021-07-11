@@ -37,7 +37,7 @@ public class ServerWorldMixin {
                 if (!(nearby instanceof MobEntity)) continue;
 
                 StackEntity other = sm.entityManager.getStackedEntity((LivingEntity) nearby);
-                if (other == null && nearby.getType() != spawned.getType() || !other.canStack()) continue;
+                if (other == null || spawned.getType() != nearby.getType() || !other.canStack()) continue;
                 // if (sm.traitManager.checkTraits(original, other)) continue;
 
                 sm.entityManager.unregisterStackedEntity(
