@@ -9,42 +9,48 @@ import net.minecraft.util.math.Box;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import sh.damon.stackmob.StackMob;
 import sh.damon.stackmob.entity.stackentity.StackEntity;
 
+import java.util.stream.Stream;
+
 @Mixin(ServerWorld.class)
 public class ServerWorldMixin {
-    @Inject(at = @At("HEAD"), method = "spawnEntity")
+    @Inject(at = @At("RETURN"), method = "loadEntities")
+    public void addEntity(Stream<Entity> entities, CallbackInfo ci) {
+        ServerWorld world = (ServerWorld) (Object) this;
+
+        StackMob sm = StackMob.getInstance();
+        sm.entityManager.registerAll(world.iterateEntities());
+    }
+
+    @Inject(at = @At("RETURN"), method = "spawnEntity")
     public void spawnEntity(Entity entity, CallbackInfoReturnable<Boolean> info) {
         if (entity instanceof MobEntity) {
+            StackMob sm = StackMob.getInstance();
+            if (sm.entityManager.isStackedEntity((LivingEntity) entity)) return;
+
             BlockPos block = entity.getBlockPos();
             Box box = new Box(
                 block.add(-5, -5, -5),
                 block.add(5,5,5)
             );
 
-            StackMob sm = StackMob.getInstance();
             StackEntity original = sm.entityManager.registerStackedEntity((LivingEntity) entity);
+            if (!original.canStack()) return;
 
             for (Entity ent : entity.world.getOtherEntities(entity, box)) {
                 if (!(ent instanceof MobEntity)) continue;
 
                 StackEntity other = sm.entityManager.getStackedEntity((LivingEntity) ent);
-                if (other == null) {
-                    StackMob.log.info("SPAWNENTITY | Other entity was not a StackEntity instance, skipping...");
-
-                    continue;
-                }
-                if (!original.canStack()) {
-                    StackMob.log.info("SPAWNENTITY | Original is unable to stack, skipping...");
-
-                    continue;
-                }
+                if (other == null || !other.canStack()) continue;
+                if (sm.traitManager.checkTraits(original, other)) continue;
 
                 sm.entityManager.unregisterStackedEntity(
                     other.merge(original)
-                );
+                ).remove(Entity.RemovalReason.DISCARDED);
             }
         }
     }

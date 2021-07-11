@@ -5,6 +5,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
+import sh.damon.stackmob.StackMob;
 import sh.damon.stackmob.entity.stackentity.StackEntity;
 
 import java.util.HashMap;
@@ -25,31 +26,38 @@ public class EntityManager {
         return this.entities.containsKey(ent.getUuid());
     }
 
-    public void registerAll(MinecraftServer server) {
-        for (ServerWorld world : server.getWorlds()) {
-            for (Entity entity : world.iterateEntities()) {
-                if (!(entity instanceof MobEntity)) continue;
+    public void registerAll(Iterable<Entity> entities) {
+        StackMob.log.info("Registering entities");
 
-                this.registerStackedEntity((LivingEntity) entity);
-            }
+        for (Entity entity : entities) {
+            if (!(entity instanceof MobEntity)) continue;
+
+            this.registerStackedEntity((LivingEntity) entity);
         }
+
+        StackMob.log.info("Finished registering entities.");
     }
 
     public StackEntity registerStackedEntity(LivingEntity entity) {
         StackEntity stackEntity = new StackEntity(entity);
         entities.put(entity.getUuid(), stackEntity);
 
+        StackMob.log.info("Registered new StackEntity: " + entity.getUuidAsString());
+
         return stackEntity;
     }
 
-    public void unregisterStackedEntity(StackEntity stackEntity) {
-        if (stackEntity == null) return;
+    public LivingEntity unregisterStackedEntity(StackEntity stackEntity) {
+        if (stackEntity == null) return null;
 
         stackEntity.setRemoved();
 
         LivingEntity entity = stackEntity.getEntity();
 
         this.entities.remove(entity.getUuid());
-        entity.remove(Entity.RemovalReason.DISCARDED);
+
+        StackMob.log.info("Removed StackEntity: " + entity.getUuidAsString());
+
+        return entity;
     }
 }

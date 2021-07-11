@@ -2,6 +2,9 @@ package sh.damon.stackmob.entity.stackentity;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.text.Text;
+import net.minecraft.util.registry.Registry;
+
+import java.util.Locale;
 
 public class StackEntity extends BaseStackEntity {
     protected final LivingEntity owner;
@@ -16,11 +19,15 @@ public class StackEntity extends BaseStackEntity {
     }
 
     public boolean canStack() {
-        return this.owner.isAlive() && !this.isMaxStackSize() && !this.removed;
+        return !this.owner.isDead() && !this.owner.isRemoved() && !this.isMaxStackSize() && !this.removed;
     }
 
     public LivingEntity getEntity() {
         return this.owner;
+    }
+
+    public String getName() {
+        return Registry.ENTITY_TYPE.getId(this.owner.getType()).getPath().toUpperCase(Locale.ROOT);
     }
 
     public boolean isMaxStackSize() {
@@ -51,7 +58,9 @@ public class StackEntity extends BaseStackEntity {
     public void setSize(final int newSize) {
         super.setSize(newSize);
 
-        this.owner.setCustomName(Text.of(this.owner.getName() + " ("+ newSize + ")"));
+        this.owner.setCustomName(newSize == 1 ?
+                null :
+                Text.of(this.getName() + " ("+ newSize + ")"));
     }
 
     public void setRemoved() {
