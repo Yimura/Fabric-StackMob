@@ -19,25 +19,25 @@ import java.util.stream.Stream;
 @Mixin(ServerWorld.class)
 public class ServerWorldMixin {
     @Inject(at = @At("RETURN"), method = "spawnEntity")
-    public void spawnEntity(Entity entity, CallbackInfoReturnable<Boolean> info) {
-        if (entity instanceof MobEntity) {
+    public void spawnEntity(Entity spawned, CallbackInfoReturnable<Boolean> info) {
+        if (spawned instanceof MobEntity) {
             StackMob sm = StackMob.getInstance();
-            if (sm.entityManager.isStackedEntity((LivingEntity) entity)) return;
+            if (sm.entityManager.isStackedEntity((LivingEntity) spawned)) return;
 
-            BlockPos block = entity.getBlockPos();
+            BlockPos block = spawned.getBlockPos();
             Box box = new Box(
                 block.add(-5, -5, -5),
                 block.add(5,5,5)
             );
 
-            StackEntity original = sm.entityManager.registerStackedEntity((LivingEntity) entity);
+            StackEntity original = sm.entityManager.registerStackedEntity((LivingEntity) spawned);
             if (!original.canStack()) return;
 
-            for (Entity ent : entity.world.getOtherEntities(entity, box)) {
-                if (!(ent instanceof MobEntity)) continue;
+            for (Entity nearby : spawned.world.getOtherEntities(spawned, box)) {
+                if (!(nearby instanceof MobEntity)) continue;
 
-                StackEntity other = sm.entityManager.getStackedEntity((LivingEntity) ent);
-                if (other == null || !other.canStack()) continue;
+                StackEntity other = sm.entityManager.getStackedEntity((LivingEntity) nearby);
+                if (other == null && nearby.getType() != spawned.getType() || !other.canStack()) continue;
                 // if (sm.traitManager.checkTraits(original, other)) continue;
 
                 sm.entityManager.unregisterStackedEntity(
