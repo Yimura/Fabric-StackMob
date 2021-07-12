@@ -14,6 +14,6 @@ public class CatType  implements Trait {
 
     @Override
     public boolean checkTrait(LivingEntity first, LivingEntity second) {
-        return ((CatEntity) first).getCatType() != ((CatEntity) second).getCatType();
+        return ((CatEntity) first).getCatType() == ((CatEntity) second).getCatType();
     }
 }

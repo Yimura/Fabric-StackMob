@@ -18,6 +18,6 @@ public class FoxType implements Trait {
 
     @Override
     public boolean checkTrait(LivingEntity first, LivingEntity second) {
-        return ((FoxEntity) first).getFoxType() != ((FoxEntity) second).getFoxType();
+        return ((FoxEntity) first).getFoxType() == ((FoxEntity) second).getFoxType();
     }
 }

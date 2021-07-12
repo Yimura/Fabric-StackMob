@@ -14,6 +14,6 @@ public class ZombieBaby implements Trait {
 
     @Override
     public boolean checkTrait(LivingEntity first, LivingEntity second) {
-        return ((ZombieEntity) first).isBaby() != ((ZombieEntity) second).isBaby();
+        return ((ZombieEntity) first).isBaby() == ((ZombieEntity) second).isBaby();
     }
 }

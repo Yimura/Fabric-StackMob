@@ -11,8 +11,14 @@ public class Age implements Trait {
         spawned.age = dead.age;
     }
 
+    /**
+     * Compares the age of the two entities (only if adult or not)
+     * @param first the initial entity.
+     * @param second the other entity the first should stack with
+     * @return True if they're both adult or both baby
+     */
     @Override
     public boolean checkTrait(LivingEntity first, LivingEntity second) {
-        return first.age >= 0 != second.age >= 0;
+        return (first.age >= 0) == (second.age >= 0);
     }
 }

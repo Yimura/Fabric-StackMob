@@ -6,7 +6,7 @@ import net.minecraft.entity.mob.MobEntity;
 import sh.damon.stackmob.entity.traits.Trait;
 import sh.damon.stackmob.entity.traits.TraitMetadata;
 
-@TraitMetadata(assignable = MobEntity.class, path = "potion-effect")
+@TraitMetadata(assignable = LivingEntity.class, path = "potion-effect")
 public class Potion implements Trait {
     @Override
     public void applyTrait(LivingEntity spawned, LivingEntity dead) {
@@ -16,6 +16,6 @@ public class Potion implements Trait {
 
     @Override
     public boolean checkTrait(LivingEntity first, LivingEntity second) {
-        return false;
+        return true;
     }
 }

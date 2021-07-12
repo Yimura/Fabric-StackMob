@@ -19,8 +19,6 @@ public class Leash implements Trait {
         MobEntity firstMob = (MobEntity) first;
         MobEntity secondMob = (MobEntity) second;
 
-        return firstMob.isLeashed() == secondMob.isLeashed() &&
-                firstMob.isLeashed() &&
-                firstMob.getHoldingEntity() != secondMob.getHoldingEntity();
+        return firstMob.isLeashed() == secondMob.isLeashed() || (firstMob.isLeashed() && secondMob.isLeashed() && firstMob.getHoldingEntity() == secondMob.getHoldingEntity());
     }
 }

@@ -18,6 +18,6 @@ public class Bee implements Trait {
 
     @Override
     public boolean checkTrait(LivingEntity first, LivingEntity second) {
-        return ((BeeEntity) first).hasNectar() != ((BeeEntity) second).hasNectar();
+        return ((BeeEntity) first).hasNectar() == ((BeeEntity) second).hasNectar();
     }
 }

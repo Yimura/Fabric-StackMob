@@ -14,6 +14,6 @@ public class PiglinBaby implements Trait {
 
     @Override
     public boolean checkTrait(LivingEntity first, LivingEntity second) {
-        return ((PiglinEntity) first).isBaby() != ((PiglinEntity) second).isBaby();
+        return ((PiglinEntity) first).isBaby() == ((PiglinEntity) second).isBaby();
     }
 }

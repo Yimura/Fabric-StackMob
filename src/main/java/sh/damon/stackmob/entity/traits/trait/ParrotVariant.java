@@ -14,6 +14,6 @@ public class ParrotVariant implements Trait {
 
     @Override
     public boolean checkTrait(LivingEntity first, LivingEntity second) {
-        return ((ParrotEntity) first).getVariant() != ((ParrotEntity) second).getVariant();
+        return ((ParrotEntity) first).getVariant() == ((ParrotEntity) second).getVariant();
     }
 }

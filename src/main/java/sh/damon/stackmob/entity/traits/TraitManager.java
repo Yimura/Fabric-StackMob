@@ -1,6 +1,7 @@
 package sh.damon.stackmob.entity.traits;
 
 import net.minecraft.entity.LivingEntity;
+import sh.damon.stackmob.StackMob;
 import sh.damon.stackmob.entity.stackentity.StackEntity;
 import sh.damon.stackmob.entity.traits.trait.*;
 
@@ -20,11 +21,22 @@ public class TraitManager {
                 trait.applyTrait(spawned.getEntity(), dead.getEntity());
     }
 
+    /**
+     * Checks for the applicable traits if they match
+     * @param first First entity
+     * @param second Second Entity
+     * @return Boolean true if all checks passed, false if a trait mismatch occurred.
+     */
     public boolean checkTraits(StackEntity first, StackEntity second) {
-        for (Trait trait : this.traits)
-            if (this.isTraitApplicable(trait, first.getEntity()) && trait.checkTrait(first.getEntity(), second.getEntity()))
-                return true;
-        return false;
+        for (Trait trait : this.traits) {
+            if (this.isTraitApplicable(trait, first.getEntity()) && !trait.checkTrait(first.getEntity(), second.getEntity())) {
+                StackMob.log.info("Failed trait check for: "+ trait.getClass().getAnnotation(TraitMetadata.class).path());
+
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public void registerAll() throws InvocationTargetException, NoSuchMethodException, InstantiationException, IllegalAccessException {
@@ -57,6 +69,9 @@ public class TraitManager {
 
     private void register(Class<? extends Trait> trait) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         final TraitMetadata metadata = trait.getAnnotation(TraitMetadata.class);
+
         this.traits.add(trait.getDeclaredConstructor().newInstance());
+
+        StackMob.log.info("Registered trait: "+ metadata.path());
     }
 }

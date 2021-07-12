@@ -21,7 +21,7 @@ public class HorseColor implements Trait {
         HorseEntity firstHorse = (HorseEntity) first;
         HorseEntity secondHorse = (HorseEntity) second;
 
-        return firstHorse.getColor() != secondHorse.getColor() ||
-                firstHorse.getArmorType() != secondHorse.getArmorType();
+        return firstHorse.getColor() == secondHorse.getColor() &&
+                firstHorse.getArmorType() == secondHorse.getArmorType();
     }
 }

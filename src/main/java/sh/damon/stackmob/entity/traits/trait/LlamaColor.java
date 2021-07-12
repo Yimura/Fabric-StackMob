@@ -9,11 +9,17 @@ import sh.damon.stackmob.entity.traits.TraitMetadata;
 public class LlamaColor implements Trait {
     @Override
     public void applyTrait(LivingEntity spawned, LivingEntity dead) {
-        ((LlamaEntity) spawned).setVariant(((LlamaEntity) dead).getVariant());
+        LlamaEntity spawnedLama = (LlamaEntity) spawned;
+        LlamaEntity deadLama = (LlamaEntity) dead;
+
+        spawnedLama.setVariant(deadLama.getVariant());
     }
 
     @Override
     public boolean checkTrait(LivingEntity first, LivingEntity second) {
-        return ((LlamaEntity) first).getVariant() != ((LlamaEntity) second).getVariant();
+        LlamaEntity firstLama = (LlamaEntity) first;
+        LlamaEntity secondLama = (LlamaEntity) second;
+
+        return firstLama.getVariant() == secondLama.getVariant() && firstLama.getCarpetColor() == secondLama.getCarpetColor();
     }
 }

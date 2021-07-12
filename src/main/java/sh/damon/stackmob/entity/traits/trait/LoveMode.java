@@ -14,6 +14,6 @@ public class LoveMode implements Trait {
 
     @Override
     public boolean checkTrait(LivingEntity first, LivingEntity second) {
-        return ((AnimalEntity) first).getLoveTicks() != 0 || ((AnimalEntity) second).getLoveTicks() != 0;
+        return ((AnimalEntity) first).isInLove() == ((AnimalEntity) second).isInLove();
     }
 }

@@ -18,6 +18,6 @@ public class MooshroomVariant implements Trait {
 
     @Override
     public boolean checkTrait(LivingEntity first, LivingEntity second) {
-        return ((MooshroomEntity) first).getMooshroomType() != ((MooshroomEntity) second).getMooshroomType();
+        return ((MooshroomEntity) first).getMooshroomType() == ((MooshroomEntity) second).getMooshroomType();
     }
 }

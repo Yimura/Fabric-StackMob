@@ -18,6 +18,6 @@ public class SlimeSize implements Trait {
 
     @Override
     public boolean checkTrait(LivingEntity first, LivingEntity second) {
-        return ((SlimeEntity) first).getSize() != ((SlimeEntity) second).getSize();
+        return ((SlimeEntity) first).getSize() == ((SlimeEntity) second).getSize();
     }
 }

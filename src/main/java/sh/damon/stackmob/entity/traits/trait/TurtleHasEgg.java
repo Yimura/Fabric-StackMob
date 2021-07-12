@@ -18,6 +18,6 @@ public class TurtleHasEgg implements Trait {
 
     @Override
     public boolean checkTrait(LivingEntity first, LivingEntity second) {
-        return ((TurtleEntity) first).hasEgg() != ((TurtleEntity) second).hasEgg();
+        return ((TurtleEntity) first).hasEgg() == ((TurtleEntity) second).hasEgg();
     }
 }

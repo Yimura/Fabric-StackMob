@@ -14,6 +14,6 @@ public class SheepShear implements Trait {
 
     @Override
     public boolean checkTrait(LivingEntity first, LivingEntity second) {
-        return ((SheepEntity) first).isSheared() != ((SheepEntity) second).isSheared();
+        return ((SheepEntity) first).isSheared() == ((SheepEntity) second).isSheared();
     }
 }

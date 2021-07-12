@@ -14,6 +14,6 @@ public class ZoglinBaby implements Trait {
 
     @Override
     public boolean checkTrait(LivingEntity first, LivingEntity second) {
-        return ((ZoglinEntity) first).isBaby() != ((ZoglinEntity) second).isBaby();
+        return ((ZoglinEntity) first).isBaby() == ((ZoglinEntity) second).isBaby();
     }
 }

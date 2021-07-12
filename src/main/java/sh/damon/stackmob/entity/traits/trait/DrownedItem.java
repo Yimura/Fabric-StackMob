@@ -41,8 +41,8 @@ public class DrownedItem implements Trait {
 
             if (!oldItemStack.isItemEqual(newItemStack)) continue;
 
-            if (DROWNED_MATERIALS.contains(oldItemStack.getItem())) return true;
+            if (DROWNED_MATERIALS.contains(oldItemStack.getItem())) return false;
         }
-        return false;
+        return true;
     }
 }

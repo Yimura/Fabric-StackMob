@@ -14,6 +14,6 @@ public class SheepColor implements Trait {
 
     @Override
     public boolean checkTrait(LivingEntity first, LivingEntity second) {
-        return ((SheepEntity) first).getColor() != ((SheepEntity) second).getColor();
+        return ((SheepEntity) first).getColor() == ((SheepEntity) second).getColor();
     }
 }
