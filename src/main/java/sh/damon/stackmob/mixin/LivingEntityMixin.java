@@ -14,25 +14,27 @@ import sh.damon.stackmob.entity.stackentity.StackEntity;
 public class LivingEntityMixin {
     @Inject(at = @At("HEAD"), method = "onDeath")
     public void onDeath(DamageSource source, CallbackInfo info) {
-        LivingEntity entity = (LivingEntity) (Object) this;
+        LivingEntity died = (LivingEntity) (Object) this;
 
         StackMob sm = StackMob.getInstance();
-        if (!sm.entityManager.isStackedEntity(entity)) return;
+        if (!sm.entityManager.isStackedEntity(died)) return;
 
-        StackEntity stackEntity = sm.entityManager.getStackedEntity(entity);
+        StackEntity stackEntity = sm.entityManager.getStackedEntity(died);
         int size = stackEntity.getSize();
 
         sm.entityManager.unregisterStackedEntity(stackEntity);
 
         if (size == 1) return;
 
-        Entity ent = entity.getType().create(entity.world);
-        if (ent == null) return;
+        LivingEntity spawned = (LivingEntity) died.getType().create(died.world);
+        if (spawned == null) return;
 
-        stackEntity = sm.entityManager.registerStackedEntity((LivingEntity) ent);
+        stackEntity = sm.entityManager.registerStackedEntity(spawned);
         stackEntity.setSize(size - 1);
 
-        ent.setPosition(entity.getPos());
-        entity.world.spawnEntity(ent);
+        sm.traitManager.applyTraits(spawned, died);
+
+        spawned.setPosition(died.getPos());
+        died.world.spawnEntity(spawned);
     }
 }

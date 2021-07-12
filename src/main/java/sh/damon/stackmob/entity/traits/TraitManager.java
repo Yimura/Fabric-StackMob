@@ -15,10 +15,10 @@ public class TraitManager {
         this.traits = new HashSet<>();
     }
 
-    public void applyTraits(StackEntity spawned, StackEntity dead) {
+    public void applyTraits(LivingEntity spawned, LivingEntity dead) {
         for (Trait trait : this.traits)
-            if (this.isTraitApplicable(trait, spawned.getEntity()))
-                trait.applyTrait(spawned.getEntity(), dead.getEntity());
+            if (this.isTraitApplicable(trait, spawned))
+                trait.applyTrait(spawned, dead);
     }
 
     /**
