@@ -4,7 +4,9 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.TurtleEntity;
 import net.minecraft.nbt.NbtCompound;
 import sh.damon.stackmob.entity.traits.Trait;
+import sh.damon.stackmob.entity.traits.TraitMetadata;
 
+@TraitMetadata(assignable = TurtleEntity.class, path = "turtle-has-egg")
 public class TurtleHasEgg implements Trait {
     @Override
     public void applyTrait(LivingEntity spawned, LivingEntity dead) {
