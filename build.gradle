@@ -38,8 +38,8 @@ dependencies {
 	// Helps with storing persistent data on entities
 	modImplementation "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-base:3.0.0"
 	modImplementation "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-entity:3.0.0"
-	include "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-base:3.0.0"
-	include "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-entity:3.0.0"
+	// include "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-base:3.0.0"
+	// include "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-entity:3.0.0"
 }
 
 processResources {
