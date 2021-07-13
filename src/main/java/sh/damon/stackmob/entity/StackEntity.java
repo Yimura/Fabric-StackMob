@@ -1,12 +1,13 @@
-package sh.damon.stackmob.entity.stackentity;
+package sh.damon.stackmob.entity;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.world.World;
 
 import java.util.Locale;
 
-public class StackEntity extends BaseStackEntity {
+public class StackEntity {
     protected final LivingEntity owner;
 
     private final int maxSize = 2048;
@@ -17,6 +18,7 @@ public class StackEntity extends BaseStackEntity {
     public StackEntity(LivingEntity entity) {
         this.owner = entity;
     }
+
     public LivingEntity duplicate() {
         return (LivingEntity) this.owner.getType().create(this.owner.world);
     }
@@ -27,6 +29,10 @@ public class StackEntity extends BaseStackEntity {
 
     public String getName() {
         return Registry.ENTITY_TYPE.getId(this.owner.getType()).getPath().toUpperCase(Locale.ROOT);
+    }
+
+    public int getSize() {
+        return this.size;
     }
 
     public boolean isMaxStackSize() {
@@ -59,7 +65,7 @@ public class StackEntity extends BaseStackEntity {
     }
 
     public void setSize(final int newSize) {
-        super.setSize(newSize);
+        this.size = newSize;
 
         this.owner.setCustomName(newSize == 1 ?
                 null :

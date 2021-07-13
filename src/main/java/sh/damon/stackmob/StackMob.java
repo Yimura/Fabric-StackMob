@@ -1,13 +1,7 @@
 package sh.damon.stackmob;
 
-import dev.onyxstudios.cca.api.v3.component.ComponentKey;
-import dev.onyxstudios.cca.api.v3.component.ComponentRegistry;
 import net.fabricmc.api.ModInitializer;
-import net.minecraft.util.Identifier;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
 import sh.damon.stackmob.entity.EntityManager;
-import sh.damon.stackmob.entity.stackentity.StackSize;
 import sh.damon.stackmob.entity.traits.TraitManager;
 import sh.damon.stackmob.util.Log;
 

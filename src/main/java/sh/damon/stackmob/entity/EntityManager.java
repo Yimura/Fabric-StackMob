@@ -3,10 +3,7 @@ package sh.damon.stackmob.entity;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.world.ServerWorld;
 import sh.damon.stackmob.StackMob;
-import sh.damon.stackmob.entity.stackentity.StackEntity;
 
 import java.util.HashMap;
 import java.util.UUID;
@@ -22,7 +19,7 @@ public class EntityManager {
         return this.entities.get(entity.getUuid());
     }
 
-    public boolean isStackedEntity(LivingEntity ent) {
+    public boolean isRegistered(LivingEntity ent) {
         return this.entities.containsKey(ent.getUuid());
     }
 
@@ -32,13 +29,13 @@ public class EntityManager {
         for (Entity entity : entities) {
             if (!(entity instanceof MobEntity)) continue;
 
-            this.registerStackedEntity((LivingEntity) entity);
+            this.register((LivingEntity) entity);
         }
 
         StackMob.log.info("Finished registering entities.");
     }
 
-    public StackEntity registerStackedEntity(LivingEntity entity) {
+    public StackEntity register(LivingEntity entity) {
         StackEntity stackEntity = new StackEntity(entity);
         entities.put(entity.getUuid(), stackEntity);
 

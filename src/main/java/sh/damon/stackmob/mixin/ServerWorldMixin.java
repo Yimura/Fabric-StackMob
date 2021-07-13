@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import sh.damon.stackmob.StackMob;
-import sh.damon.stackmob.entity.stackentity.StackEntity;
+import sh.damon.stackmob.entity.StackEntity;
 
 @Mixin(ServerWorld.class)
 public class ServerWorldMixin {
@@ -19,7 +19,8 @@ public class ServerWorldMixin {
     public void spawnEntity(Entity spawned, CallbackInfoReturnable<Boolean> info) {
         if (spawned instanceof MobEntity) {
             StackMob sm = StackMob.getInstance();
-            if (sm.entityManager.isStackedEntity((LivingEntity) spawned)) return;
+
+            if (sm.entityManager.isRegistered((LivingEntity) spawned)) return;
 
             BlockPos block = spawned.getBlockPos();
             Box box = new Box(
@@ -27,7 +28,7 @@ public class ServerWorldMixin {
                 block.add(5,5,5)
             );
 
-            StackEntity original = sm.entityManager.registerStackedEntity((LivingEntity) spawned);
+            StackEntity original = sm.entityManager.register((LivingEntity) spawned);
             if (original.isUnableToStack()) return;
 
             for (Entity nearby : spawned.world.getOtherEntities(spawned, box)) {

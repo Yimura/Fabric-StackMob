@@ -2,7 +2,7 @@ package sh.damon.stackmob.entity.traits;
 
 import net.minecraft.entity.LivingEntity;
 import sh.damon.stackmob.StackMob;
-import sh.damon.stackmob.entity.stackentity.StackEntity;
+import sh.damon.stackmob.entity.StackEntity;
 import sh.damon.stackmob.entity.traits.trait.*;
 
 import java.lang.reflect.InvocationTargetException;
