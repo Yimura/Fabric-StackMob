@@ -17,9 +17,8 @@ public class StackEntity extends BaseStackEntity {
     public StackEntity(LivingEntity entity) {
         this.owner = entity;
     }
-
-    public boolean canStack() {
-        return !this.owner.isDead() && !this.owner.isRemoved() && !this.isMaxStackSize() && !this.removed;
+    public LivingEntity duplicate() {
+        return (LivingEntity) this.owner.getType().create(this.owner.world);
     }
 
     public LivingEntity getEntity() {
@@ -32,6 +31,10 @@ public class StackEntity extends BaseStackEntity {
 
     public boolean isMaxStackSize() {
         return this.maxSize <= this.size;
+    }
+
+    public boolean isUnableToStack() {
+        return this.owner.isDead() || this.owner.isRemoved() || this.isMaxStackSize() || this.removed;
     }
 
     public StackEntity merge(StackEntity other) {

@@ -26,8 +26,7 @@ public class LivingEntityMixin {
 
         if (size == 1) return;
 
-        LivingEntity spawned = (LivingEntity) died.getType().create(died.world);
-        if (spawned == null) return;
+        LivingEntity spawned = stackEntity.duplicate();
 
         stackEntity = sm.entityManager.registerStackedEntity(spawned);
         stackEntity.setSize(size - 1);

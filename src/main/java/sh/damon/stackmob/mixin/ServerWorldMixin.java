@@ -9,12 +9,9 @@ import net.minecraft.util.math.Box;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import sh.damon.stackmob.StackMob;
 import sh.damon.stackmob.entity.stackentity.StackEntity;
-
-import java.util.stream.Stream;
 
 @Mixin(ServerWorld.class)
 public class ServerWorldMixin {
@@ -31,13 +28,13 @@ public class ServerWorldMixin {
             );
 
             StackEntity original = sm.entityManager.registerStackedEntity((LivingEntity) spawned);
-            if (!original.canStack()) return;
+            if (original.isUnableToStack()) return;
 
             for (Entity nearby : spawned.world.getOtherEntities(spawned, box)) {
                 if (!(nearby instanceof MobEntity)) continue;
 
                 StackEntity other = sm.entityManager.getStackedEntity((LivingEntity) nearby);
-                if (other == null || spawned.getType() != nearby.getType() || !other.canStack()) continue;
+                if (other == null || spawned.getType() != nearby.getType() || other.isUnableToStack()) continue;
                 if (!sm.traitManager.checkTraits(original, other)) continue;
 
                 sm.entityManager.unregisterStackedEntity(
