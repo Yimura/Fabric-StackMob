@@ -6,7 +6,8 @@
   "mixins": [
     "AnimalEntityMixin",
     "LivingEntityMixin",
-    "ServerWorldMixin"
+    "ServerWorldMixin",
+    "SheepEntityMixin"
   ],
   "client": [
   ],
