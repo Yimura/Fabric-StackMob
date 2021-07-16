@@ -2,6 +2,7 @@ package sh.damon.stackmob.command;
 
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.server.command.ServerCommandSource;
+import sh.damon.stackmob.command.commands.CreateStackEntity;
 import sh.damon.stackmob.command.commands.KillStackedEntity;
 
 import java.util.HashSet;
@@ -25,6 +26,7 @@ public class CommandManager {
     }
 
     public void registerAll() {
+        this.register(new CreateStackEntity());
         this.register(new KillStackedEntity());
     }
 

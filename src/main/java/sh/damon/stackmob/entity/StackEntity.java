@@ -27,6 +27,10 @@ public class StackEntity {
         return this.owner;
     }
 
+    public int getMaxSize() {
+        return this.maxSize;
+    }
+
     public String getName() {
         return Registry.ENTITY_TYPE.getId(this.owner.getType()).getPath().toUpperCase(Locale.ROOT);
     }
