@@ -19,7 +19,7 @@ import sh.damon.stackmob.command.StackMobCommand;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
-public class KillStackedEntity implements StackMobCommand, Command<ServerCommandSource> {
+public class KillStackedEntity implements StackMobCommand {
     @Override
     public void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(
