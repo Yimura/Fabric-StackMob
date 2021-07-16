@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_16",
   "mixins": [
     "AnimalEntityMixin",
+    "CommandManagerMixin",
     "EntityMixin",
     "LivingEntityMixin",
     "ServerWorldMixin",
