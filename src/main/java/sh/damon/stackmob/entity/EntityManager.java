@@ -23,18 +23,6 @@ public class EntityManager {
         return this.entities.containsKey(ent.getUuid());
     }
 
-    public void registerAll(Iterable<Entity> entities) {
-        StackMob.log.info("Registering entities");
-
-        for (Entity entity : entities) {
-            if (!(entity instanceof MobEntity)) continue;
-
-            this.register((LivingEntity) entity);
-        }
-
-        StackMob.log.info("Finished registering entities.");
-    }
-
     public StackEntity register(LivingEntity entity) {
         StackEntity stackEntity = new StackEntity(entity);
         entities.put(entity.getUuid(), stackEntity);
