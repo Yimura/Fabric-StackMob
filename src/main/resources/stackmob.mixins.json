@@ -6,6 +6,7 @@
   "mixins": [
     "AnimalEntityMixin",
     "CommandManagerMixin",
+    "CreeperEntityMixin",
     "EntityMixin",
     "LivingEntityMixin",
     "ServerWorldMixin",
