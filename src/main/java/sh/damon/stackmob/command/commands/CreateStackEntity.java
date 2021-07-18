@@ -46,8 +46,8 @@ public class CreateStackEntity implements StackMobCommand {
         NbtCompound nbt = new NbtCompound();
         nbt.putString("id", id.toString());
 
-        ServerCommandSource source = context.getSource();
-        ServerWorld world = source.getWorld();
+        final ServerCommandSource source = context.getSource();
+        final ServerWorld world = source.getWorld();
 
         final BlockPos spawnPos = new BlockPos(source.getPosition());
 
@@ -66,7 +66,7 @@ public class CreateStackEntity implements StackMobCommand {
         if (!world.shouldCreateNewEntityWithPassenger(entity))
             throw new SimpleCommandExceptionType(new LiteralText("Failed to create entity, UUID duplicate in registry.")).create();
 
-        StackMob sm = StackMob.getInstance();
+        final StackMob sm = StackMob.getInstance();
         StackEntity stackEntity;
         if (sm.entityManager.isRegistered((LivingEntity) entity))
             stackEntity = sm.entityManager.getStackedEntity((LivingEntity) entity);
