@@ -5,6 +5,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.minecraft.command.argument.EntitySummonArgumentType;
+import net.minecraft.command.argument.NbtCompoundArgumentType;
 import net.minecraft.command.suggestion.SuggestionProviders;
 import net.minecraft.entity.*;
 import net.minecraft.entity.mob.MobEntity;
@@ -27,15 +28,23 @@ public class CreateStackEntity implements StackMobCommand {
     @Override
     public void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(
-            literal("sm")
-                .then(literal("create")
-                .then(
-                    argument("type", EntitySummonArgumentType.entitySummon()).suggests(SuggestionProviders.SUMMONABLE_ENTITIES)
-                    .then(
-                        argument("stack_size", integer()).executes(this)
+            literal("sm").then(literal("create").then(
+                argument("type", EntitySummonArgumentType.entitySummon())
+                .suggests(SuggestionProviders.SUMMONABLE_ENTITIES).then(
+                    argument("stack_size", integer(2, 2048)).executes(this)
+                )
+            ))
+        );
+
+        dispatcher.register(
+            literal("sm").then(literal("create").then(
+                argument("type", EntitySummonArgumentType.entitySummon())
+                .suggests(SuggestionProviders.SUMMONABLE_ENTITIES).then(
+                    argument("stack_size", integer(2, 2048)).then(
+                        argument("nbt", NbtCompoundArgumentType.nbtCompound()).executes(this)
                     )
                 )
-            )
+            ))
         );
     }
 
@@ -43,7 +52,13 @@ public class CreateStackEntity implements StackMobCommand {
     public int run(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         Identifier id = EntitySummonArgumentType.getEntitySummon(context, "type");
 
-        NbtCompound nbt = new NbtCompound();
+        NbtCompound nbt;
+        try {
+            nbt = NbtCompoundArgumentType.getNbtCompound(context,"nbt");
+        }
+        catch (IllegalArgumentException e) {
+            nbt = new NbtCompound();
+        }
         nbt.putString("id", id.toString());
 
         final ServerCommandSource source = context.getSource();
