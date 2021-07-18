@@ -12,7 +12,7 @@ import sh.damon.stackmob.entity.StackEntity;
 
 @Mixin(LivingEntity.class)
 public class LivingEntityMixin {
-    private static final String STACK_SIZE = "stack_size";
+    private static final String STACK_SIZE = "StackSize";
 
     @Inject(at = @At("HEAD"), method = "onDeath")
     public void onDeath(DamageSource source, CallbackInfo info) {
