@@ -27,7 +27,7 @@ public class EntityManager {
         StackEntity stackEntity = new StackEntity(entity);
         entities.put(entity.getUuid(), stackEntity);
 
-        StackMob.log.info("Registered new StackEntity: " + entity.getUuidAsString());
+//        StackMob.log.info("Registered new StackEntity: " + entity.getUuidAsString());
 
         return stackEntity;
     }
@@ -41,7 +41,7 @@ public class EntityManager {
 
         this.entities.remove(entity.getUuid());
 
-        StackMob.log.info("Removed StackEntity: " + entity.getUuidAsString());
+//        StackMob.log.info("Removed StackEntity: " + entity.getUuidAsString());
 
         return entity;
     }
