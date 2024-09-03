@@ -8,6 +8,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.server.command.TeleportCommand;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -41,29 +42,33 @@ public class SheepEntityMixin {
         if (stackEntity.getSize() <= 1) return;
 
         ItemStack itemStack = player.getStackInHand(hand);
+
+        final int remainingDurability = itemStack.getMaxDamage() - itemStack.getDamage();
+        final int maxAllowedShearage = Integer.min(remainingDurability, stackEntity.getSize());
+
         if (itemStack.isOf(Items.SHEARS) && !sheep.getWorld().isClient && sheep.isShearable()) {
-            SheepEntityMixin.shear(sheep, stackEntity.getSize());
+            SheepEntityMixin.shear(sheep, maxAllowedShearage);
 
             sheep.emitGameEvent(GameEvent.SHEAR, player);
 
-
-            itemStack.damage(stackEntity.getSize(), player, player.getPreferredEquipmentSlot(itemStack));
+            itemStack.damage(maxAllowedShearage, player, player.getPreferredEquipmentSlot(itemStack));
 
             cir.setReturnValue(ActionResult.SUCCESS);
         }
     }
 
+    private static final Random random = new Random();
     private static void shear(SheepEntity sheep, int size) {
         sheep.getWorld().playSoundFromEntity(null, sheep, SoundEvents.ENTITY_SHEEP_SHEAR, SoundCategory.PLAYERS, 1.0F, 1.0F);
         sheep.setSheared(true);
 
-        final Random random = new Random();
-
-        int i = (1 + random.nextInt(3)) * size;
-        for(int j = 0; j < i; ++j) {
+        final int woolCount = random.nextInt(size, size * 4);
+        for(int i = 0; i < woolCount; ++i) {
             ItemEntity itemEntity = sheep.dropItem((ItemConvertible)DROPS.get(sheep.getColor()), 1);
             if (itemEntity != null) {
-                itemEntity.setVelocity(itemEntity.getVelocity().add((double)((random.nextFloat() - random.nextFloat()) * 0.1F), (double)(random.nextFloat() * 0.05F), (double)((random.nextFloat() - random.nextFloat()) * 0.1F)));
+                itemEntity.setVelocity(itemEntity.getVelocity().add(((random.nextFloat() - random.nextFloat()) * 0.1F),
+                        (random.nextFloat() * 0.05F),
+                        ((random.nextFloat() - random.nextFloat()) * 0.1F)));
             }
         }
     }
