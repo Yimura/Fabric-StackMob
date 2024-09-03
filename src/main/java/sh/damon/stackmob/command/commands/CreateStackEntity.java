@@ -5,32 +5,37 @@ import com.mojang.brigadier.LiteralMessage;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-import net.minecraft.command.argument.EntityArgumentType;
+import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.NbtCompoundArgumentType;
+import net.minecraft.command.argument.RegistryEntryReferenceArgumentType;
 import net.minecraft.command.suggestion.SuggestionProviders;
 import net.minecraft.entity.*;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import sh.damon.stackmob.StackMob;
-import sh.damon.stackmob.command.StackMobCommand;
+import sh.damon.stackmob.command.ICommand;
 import sh.damon.stackmob.entity.StackEntity;
-
-import java.util.Objects;
 
 import static com.mojang.brigadier.arguments.IntegerArgumentType.getInteger;
 import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
-public class CreateStackEntity implements StackMobCommand {
+public class CreateStackEntity implements ICommand {
+    private final Logger LOGGER = LogManager.getLogger("CreateStackEntity");
+
     @Override
-    public void register(CommandDispatcher<ServerCommandSource> dispatcher) {
+    public void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, boolean isDedicated) {
         dispatcher.register(
             literal("sm").then(literal("create").then(
-                argument("type", EntityArgumentType.entity())
+                argument("type", RegistryEntryReferenceArgumentType.registryEntry(registryAccess, RegistryKeys.ENTITY_TYPE))
                 .suggests(SuggestionProviders.SUMMONABLE_ENTITIES).then(
                     argument("stack_size", integer(2, 2048)).executes(this)
                 )
@@ -39,7 +44,7 @@ public class CreateStackEntity implements StackMobCommand {
 
         dispatcher.register(
             literal("sm").then(literal("create").then(
-                argument("type", EntityArgumentType.entity())
+                argument("type", RegistryEntryReferenceArgumentType.registryEntry(registryAccess, RegistryKeys.ENTITY_TYPE))
                 .suggests(SuggestionProviders.SUMMONABLE_ENTITIES).then(
                     argument("stack_size", integer(2, 2048)).then(
                         argument("nbt", NbtCompoundArgumentType.nbtCompound()).executes(this)
@@ -51,7 +56,7 @@ public class CreateStackEntity implements StackMobCommand {
 
     @Override
     public int run(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        Entity id = EntityArgumentType.getEntity(context, "type");
+        RegistryEntry.Reference<EntityType<?>> entityType = RegistryEntryReferenceArgumentType.getSummonableEntityType(context, "type");
 
         NbtCompound nbt;
         try {
@@ -60,17 +65,16 @@ public class CreateStackEntity implements StackMobCommand {
         catch (IllegalArgumentException e) {
             nbt = new NbtCompound();
         }
-        nbt.putString("id", id.toString());
+        nbt.putString("id", entityType.registryKey().getValue().toString());
 
         final ServerCommandSource source = context.getSource();
         final ServerWorld world = source.getWorld();
 
         // get position of the player that requested the stackmob
-        final BlockPos spawnPos = Objects.requireNonNull(source.getEntity()).getBlockPos();
+        final Vec3d spawnPos = source.getPosition();
 
         Entity entity = EntityType.loadEntityWithPassengers(nbt, world, ent -> {
             ent.refreshPositionAndAngles(spawnPos, ent.getYaw(), ent.getPitch());
-
             return ent;
         });
 
@@ -78,7 +82,7 @@ public class CreateStackEntity implements StackMobCommand {
             throw new SimpleCommandExceptionType(new LiteralMessage("Failed to create entity")).create();
 
         if (entity instanceof MobEntity)
-            ((MobEntity) entity).initialize(world, world.getLocalDifficulty(spawnPos), SpawnReason.COMMAND, null);
+            ((MobEntity) entity).initialize(world, world.getLocalDifficulty(entity.getBlockPos()), SpawnReason.COMMAND, null);
 
         if (!world.spawnNewEntityAndPassengers(entity))
             throw new SimpleCommandExceptionType(new LiteralMessage("Failed to create entity, UUID duplicate in registry.")).create();
@@ -96,6 +100,6 @@ public class CreateStackEntity implements StackMobCommand {
 
         stackEntity.setSize(size);
 
-        return 1;
+        return SINGLE_SUCCESS;
     }
 }

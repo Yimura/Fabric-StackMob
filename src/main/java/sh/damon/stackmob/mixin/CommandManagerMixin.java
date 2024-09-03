@@ -20,6 +20,6 @@ public abstract class CommandManagerMixin {
 
     @Inject(at = @At(value = "INVOKE", target = "Lcom/mojang/brigadier/CommandDispatcher;setConsumer(Lcom/mojang/brigadier/ResultConsumer;)V", remap = false), method = "<init>")
     private void onCommandRegistry(CommandManager.RegistrationEnvironment environment, CommandRegistryAccess registryAccess, CallbackInfo ci) {
-        StackMob.getInstance().commandManager.register(this.dispatcher, environment == CommandManager.RegistrationEnvironment.DEDICATED);
+        StackMob.getInstance().commandManager.register(this.dispatcher, registryAccess, environment == CommandManager.RegistrationEnvironment.DEDICATED);
     }
 }

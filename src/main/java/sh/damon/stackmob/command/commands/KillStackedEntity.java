@@ -5,20 +5,22 @@ import com.mojang.brigadier.LiteralMessage;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
+import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import sh.damon.stackmob.StackMob;
-import sh.damon.stackmob.command.StackMobCommand;
+import sh.damon.stackmob.command.ICommand;
 
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
-public class KillStackedEntity implements StackMobCommand {
+public class KillStackedEntity implements ICommand {
     @Override
-    public void register(CommandDispatcher<ServerCommandSource> dispatcher) {
+    public void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, boolean isDedicated) {
         dispatcher.register(
             literal("sm").then(literal("kill").then(argument("target", EntityArgumentType.entity()).executes(this)))
         );
