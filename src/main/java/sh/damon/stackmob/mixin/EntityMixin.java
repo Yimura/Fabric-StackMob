@@ -3,6 +3,7 @@ package sh.damon.stackmob.mixin;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.passive.ArmadilloEntity;
 import net.minecraft.entity.passive.ChickenEntity;
 import net.minecraft.entity.passive.TurtleEntity;
 import net.minecraft.item.ItemStack;
@@ -22,8 +23,8 @@ public class EntityMixin {
     public void onDroppedItem(ItemStack stack, float yOffset, CallbackInfoReturnable<ItemEntity> cir) {
         Entity entity = (Entity) (Object) this;
 
-        if (!(entity instanceof LivingEntity) || !(entity instanceof ChickenEntity || entity instanceof TurtleEntity)) return;
-        if (!(stack.isOf(Items.EGG) || stack.isOf(Items.SCUTE))) return;
+        if (!(entity instanceof ChickenEntity || entity instanceof TurtleEntity || entity instanceof ArmadilloEntity)) return;
+        if (!(stack.isOf(Items.EGG) || stack.isOf(Items.TURTLE_SCUTE) || stack.isOf(Items.ARMADILLO_SCUTE))) return;
 
         StackMob sm = StackMob.getInstance();
         if (!sm.entityManager.isRegistered((LivingEntity) entity)) return;

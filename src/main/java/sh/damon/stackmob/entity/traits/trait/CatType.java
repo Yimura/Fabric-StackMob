@@ -9,11 +9,11 @@ import sh.damon.stackmob.entity.traits.TraitMetadata;
 public class CatType  implements Trait {
     @Override
     public void applyTrait(LivingEntity spawned, LivingEntity dead) {
-        ((CatEntity) spawned).setCatType(((CatEntity) dead).getCatType());
+        ((CatEntity) spawned).setVariant(((CatEntity) dead).getVariant());
     }
 
     @Override
     public boolean checkTrait(LivingEntity first, LivingEntity second) {
-        return ((CatEntity) first).getCatType() == ((CatEntity) second).getCatType();
+        return ((CatEntity) first).getVariant() == ((CatEntity) second).getVariant();
     }
 }

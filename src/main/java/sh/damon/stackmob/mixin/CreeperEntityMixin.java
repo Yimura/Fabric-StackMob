@@ -29,7 +29,7 @@ public class CreeperEntityMixin {
         sm.traitManager.applyTraits(spawned, died);
 
         spawned.setPosition(died.getPos());
-        died.world.spawnEntity(spawned);
+        died.getWorld().spawnEntity(spawned);
 
         stackEntity = sm.entityManager.register(spawned);
         stackEntity.setSize(size - 1);

@@ -22,7 +22,7 @@ public class ServerWorldMixin {
 
             if (sm.entityManager.isRegistered((LivingEntity) spawned)) return;
 
-            BlockPos block = spawned.getBlockPos();
+            final var block = spawned.getPos();
             Box box = new Box(
                 block.add(-5, -5, -5),
                 block.add(5,5,5)
@@ -31,7 +31,7 @@ public class ServerWorldMixin {
             StackEntity original = sm.entityManager.register((LivingEntity) spawned);
             if (original.isUnableToStack()) return;
 
-            for (Entity nearby : spawned.world.getOtherEntities(spawned, box)) {
+            for (Entity nearby : spawned.getWorld().getOtherEntities(spawned, box)) {
                 if (!(nearby instanceof MobEntity)) continue;
 
                 StackEntity other = sm.entityManager.getStackedEntity((LivingEntity) nearby);

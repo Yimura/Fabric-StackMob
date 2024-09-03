@@ -39,7 +39,7 @@ public class DrownedItem implements Trait {
             ItemStack oldItemStack = oldDrowned.getEquippedStack(equipmentSlot);
             ItemStack newItemStack = newDrowned.getEquippedStack(equipmentSlot);
 
-            if (!oldItemStack.isItemEqual(newItemStack)) continue;
+            if (!oldItemStack.equals(newItemStack)) continue;
 
             if (DROWNED_MATERIALS.contains(oldItemStack.getItem())) return false;
         }

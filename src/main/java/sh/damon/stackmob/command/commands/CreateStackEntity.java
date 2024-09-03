@@ -1,10 +1,11 @@
 package sh.damon.stackmob.command.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.LiteralMessage;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-import net.minecraft.command.argument.EntitySummonArgumentType;
+import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.command.argument.NbtCompoundArgumentType;
 import net.minecraft.command.suggestion.SuggestionProviders;
 import net.minecraft.entity.*;
@@ -12,12 +13,12 @@ import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.LiteralText;
-import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import sh.damon.stackmob.StackMob;
 import sh.damon.stackmob.command.StackMobCommand;
 import sh.damon.stackmob.entity.StackEntity;
+
+import java.util.Objects;
 
 import static com.mojang.brigadier.arguments.IntegerArgumentType.getInteger;
 import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
@@ -29,7 +30,7 @@ public class CreateStackEntity implements StackMobCommand {
     public void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(
             literal("sm").then(literal("create").then(
-                argument("type", EntitySummonArgumentType.entitySummon())
+                argument("type", EntityArgumentType.entity())
                 .suggests(SuggestionProviders.SUMMONABLE_ENTITIES).then(
                     argument("stack_size", integer(2, 2048)).executes(this)
                 )
@@ -38,7 +39,7 @@ public class CreateStackEntity implements StackMobCommand {
 
         dispatcher.register(
             literal("sm").then(literal("create").then(
-                argument("type", EntitySummonArgumentType.entitySummon())
+                argument("type", EntityArgumentType.entity())
                 .suggests(SuggestionProviders.SUMMONABLE_ENTITIES).then(
                     argument("stack_size", integer(2, 2048)).then(
                         argument("nbt", NbtCompoundArgumentType.nbtCompound()).executes(this)
@@ -50,7 +51,7 @@ public class CreateStackEntity implements StackMobCommand {
 
     @Override
     public int run(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        Identifier id = EntitySummonArgumentType.getEntitySummon(context, "type");
+        Entity id = EntityArgumentType.getEntity(context, "type");
 
         NbtCompound nbt;
         try {
@@ -64,7 +65,8 @@ public class CreateStackEntity implements StackMobCommand {
         final ServerCommandSource source = context.getSource();
         final ServerWorld world = source.getWorld();
 
-        final BlockPos spawnPos = new BlockPos(source.getPosition());
+        // get position of the player that requested the stackmob
+        final BlockPos spawnPos = Objects.requireNonNull(source.getEntity()).getBlockPos();
 
         Entity entity = EntityType.loadEntityWithPassengers(nbt, world, ent -> {
             ent.refreshPositionAndAngles(spawnPos, ent.getYaw(), ent.getPitch());
@@ -73,13 +75,13 @@ public class CreateStackEntity implements StackMobCommand {
         });
 
         if (entity == null)
-            throw new SimpleCommandExceptionType(new LiteralText("Failed to create entity")).create();
+            throw new SimpleCommandExceptionType(new LiteralMessage("Failed to create entity")).create();
 
         if (entity instanceof MobEntity)
-            ((MobEntity) entity).initialize(world, world.getLocalDifficulty(spawnPos), SpawnReason.COMMAND, (EntityData) null, (NbtCompound) null);
+            ((MobEntity) entity).initialize(world, world.getLocalDifficulty(spawnPos), SpawnReason.COMMAND, null);
 
-        if (!world.shouldCreateNewEntityWithPassenger(entity))
-            throw new SimpleCommandExceptionType(new LiteralText("Failed to create entity, UUID duplicate in registry.")).create();
+        if (!world.spawnNewEntityAndPassengers(entity))
+            throw new SimpleCommandExceptionType(new LiteralMessage("Failed to create entity, UUID duplicate in registry.")).create();
 
         final StackMob sm = StackMob.getInstance();
         StackEntity stackEntity;
@@ -90,7 +92,7 @@ public class CreateStackEntity implements StackMobCommand {
 
         int size = getInteger(context, "stack_size");
         if (size < 1 || size > stackEntity.getMaxSize())
-            throw new SimpleCommandExceptionType(new LiteralText("Stack size is large than the maximum stack size or smaller than 1.")).create();
+            throw new SimpleCommandExceptionType(new LiteralMessage("Stack size is large than the maximum stack size or smaller than 1.")).create();
 
         stackEntity.setSize(size);
 

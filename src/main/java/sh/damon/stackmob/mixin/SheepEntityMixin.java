@@ -8,6 +8,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ActionResult;
@@ -40,21 +41,20 @@ public class SheepEntityMixin {
         if (stackEntity.getSize() <= 1) return;
 
         ItemStack itemStack = player.getStackInHand(hand);
-        if (itemStack.isOf(Items.SHEARS) && !sheep.world.isClient && sheep.isShearable()) {
+        if (itemStack.isOf(Items.SHEARS) && !sheep.getWorld().isClient && sheep.isShearable()) {
             SheepEntityMixin.shear(sheep, stackEntity.getSize());
 
             sheep.emitGameEvent(GameEvent.SHEAR, player);
 
-            itemStack.damage(stackEntity.getSize(), player, (playerx) -> {
-                playerx.sendToolBreakStatus(hand);
-            });
+
+            itemStack.damage(stackEntity.getSize(), player, player.getPreferredEquipmentSlot(itemStack));
 
             cir.setReturnValue(ActionResult.SUCCESS);
         }
     }
 
     private static void shear(SheepEntity sheep, int size) {
-        sheep.world.playSoundFromEntity((PlayerEntity)null, sheep, SoundEvents.ENTITY_SHEEP_SHEAR, SoundCategory.PLAYERS, 1.0F, 1.0F);
+        sheep.getWorld().playSoundFromEntity(null, sheep, SoundEvents.ENTITY_SHEEP_SHEAR, SoundCategory.PLAYERS, 1.0F, 1.0F);
         sheep.setSheared(true);
 
         final Random random = new Random();

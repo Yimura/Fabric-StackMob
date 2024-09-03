@@ -1,8 +1,8 @@
 package sh.damon.stackmob.entity;
 
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.registry.Registry;
 import net.minecraft.text.Text;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
 import java.util.Locale;
@@ -20,7 +20,7 @@ public class StackEntity {
     }
 
     public LivingEntity duplicate() {
-        return (LivingEntity) this.owner.getType().create(this.owner.world);
+        return (LivingEntity) this.owner.getType().create(this.owner.getWorld());
     }
 
     public LivingEntity getEntity() {
@@ -32,7 +32,8 @@ public class StackEntity {
     }
 
     public String getName() {
-        return Registry.ENTITY_TYPE.getId(this.owner.getType()).getPath().toUpperCase(Locale.ROOT);
+        return "Undefined1";
+        //return Registry.ENTITY_TYPE.getId(this.owner.getType()).getPath().toUpperCase(Locale.ROOT);
     }
 
     public int getSize() {

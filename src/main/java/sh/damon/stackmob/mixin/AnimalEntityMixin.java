@@ -31,7 +31,7 @@ public class AnimalEntityMixin {
         int kids = Math.min(parent.getSize(), stack.getCount()) / 2;
         stack.setCount(stack.getCount() - kids * 2);
 
-        animal.world.sendEntityStatus(animal, (byte)18);
+        animal.getWorld().sendEntityStatus(animal, (byte)18);
         animal.setBreedingAge(6000);
         animal.resetLoveTicks();
 
@@ -45,7 +45,7 @@ public class AnimalEntityMixin {
         baby.setBaby(true);
         baby.setPosition(animal.getPos());
 
-        animal.world.spawnEntity(baby);
+        animal.getWorld().spawnEntity(baby);
 
         player.increaseStat(Stats.ANIMALS_BRED, kids);
         Criteria.BRED_ANIMALS.trigger(
