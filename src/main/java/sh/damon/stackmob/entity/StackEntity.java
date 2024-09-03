@@ -1,11 +1,9 @@
 package sh.damon.stackmob.entity;
 
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.registry.Registry;
 import net.minecraft.text.Text;
-import net.minecraft.world.World;
 
-import java.util.Locale;
+import java.util.Objects;
 
 public class StackEntity {
     protected final LivingEntity owner;
@@ -32,8 +30,7 @@ public class StackEntity {
     }
 
     public String getName() {
-        return "Undefined1";
-        //return Registry.ENTITY_TYPE.getId(this.owner.getType()).getPath().toUpperCase(Locale.ROOT);
+        return Objects.requireNonNull(this.owner.getDisplayName()).getString();
     }
 
     public int getSize() {
