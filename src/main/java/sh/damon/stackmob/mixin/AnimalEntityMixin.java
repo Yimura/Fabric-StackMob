@@ -14,6 +14,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import sh.damon.stackmob.StackMob;
 import sh.damon.stackmob.entity.StackEntity;
+import sh.damon.stackmob.util.EntityHelper;
 
 @Mixin(AnimalEntity.class)
 public class AnimalEntityMixin {
@@ -36,16 +37,14 @@ public class AnimalEntityMixin {
         animal.resetLoveTicks();
 
         AnimalEntity baby = (AnimalEntity) parent.duplicate();
-
         sm.entityManager.register(baby)
             .setSize(kids);
 
         sm.traitManager.applyTraits(baby, animal);
-
         baby.setBaby(true);
         baby.setPosition(animal.getPos());
 
-        animal.getWorld().spawnEntity(baby);
+        EntityHelper.spawnEntity(baby);
 
         player.increaseStat(Stats.ANIMALS_BRED, kids);
         Criteria.BRED_ANIMALS.trigger(
