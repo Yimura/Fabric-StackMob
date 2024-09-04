@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import sh.damon.stackmob.StackMob;
 import sh.damon.stackmob.entity.StackEntity;
+import sh.damon.stackmob.util.EntityHelper;
 
 @Mixin(CreeperEntity.class)
 public class CreeperEntityMixin {
@@ -28,10 +29,9 @@ public class CreeperEntityMixin {
 
         sm.traitManager.applyTraits(spawned, died);
 
-        spawned.setPosition(died.getPos());
-        died.getWorld().spawnEntity(spawned);
-
-        stackEntity = sm.entityManager.register(spawned);
-        stackEntity.setSize(size - 1);
+        if (EntityHelper.spawnEntity(spawned)) {
+            stackEntity = sm.entityManager.register(spawned);
+            stackEntity.setSize(size - 1);
+        }
     }
 }

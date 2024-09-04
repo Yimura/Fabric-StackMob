@@ -23,6 +23,7 @@ import org.apache.logging.log4j.Logger;
 import sh.damon.stackmob.StackMob;
 import sh.damon.stackmob.command.ICommand;
 import sh.damon.stackmob.entity.StackEntity;
+import sh.damon.stackmob.util.EntityHelper;
 
 import static com.mojang.brigadier.arguments.IntegerArgumentType.getInteger;
 import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
@@ -65,6 +66,14 @@ public class CreateStackEntity implements ICommand {
         final ServerCommandSource source = context.getSource();
         final ServerWorld world = source.getWorld();
 
+        Vec3d coords;
+        try {
+            coords = Vec3ArgumentType.getPosArgument(context, "coords").toAbsolutePos(source);
+        } catch (IllegalArgumentException e) {
+            // get position of the player that requested the stackmob
+            coords = source.getPosition();
+        }
+
         NbtCompound nbt;
         try {
             nbt = NbtCompoundArgumentType.getNbtCompound(context,"nbt");
@@ -74,36 +83,22 @@ public class CreateStackEntity implements ICommand {
         }
         nbt.putString("id", entityType.registryKey().getValue().toString());
 
-        Vec3d coords;
-        try {
-            coords = Vec3ArgumentType.getPosArgument(context, "coords").toAbsolutePos(source);
-        } catch (IllegalArgumentException e) {
-            // get position of the player that requested the stackmob
-            coords = source.getPosition();
-        }
-
         final Vec3d spawnPos = coords; // convert to final to stop lambda from complaining
 
-        Entity entity = EntityType.loadEntityWithPassengers(nbt, world, ent -> {
-            ent.refreshPositionAndAngles(spawnPos, ent.getYaw(), ent.getPitch());
-            return ent;
-        });
+        LivingEntity entity = EntityHelper.createNewEntity(world, entityType.registryKey().getValue(), spawnPos, nbt);
 
         if (entity == null)
             throw new SimpleCommandExceptionType(new LiteralMessage("Failed to create entity")).create();
 
-        if (entity instanceof MobEntity)
-            ((MobEntity) entity).initialize(world, world.getLocalDifficulty(entity.getBlockPos()), SpawnReason.COMMAND, null);
-
-        if (!world.spawnNewEntityAndPassengers(entity))
+        if (!EntityHelper.spawnEntity(entity))
             throw new SimpleCommandExceptionType(new LiteralMessage("Failed to create entity, UUID duplicate in registry.")).create();
 
         final StackMob sm = StackMob.getInstance();
         StackEntity stackEntity;
-        if (sm.entityManager.isRegistered((LivingEntity) entity))
-            stackEntity = sm.entityManager.getStackedEntity((LivingEntity) entity);
+        if (sm.entityManager.isRegistered(entity))
+            stackEntity = sm.entityManager.getStackedEntity(entity);
         else
-            stackEntity = sm.entityManager.register((LivingEntity) entity);
+            stackEntity = sm.entityManager.register(entity);
 
         int size = getInteger(context, "stack_size");
         if (size < 1 || size > stackEntity.getMaxSize())

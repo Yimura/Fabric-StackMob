@@ -2,6 +2,7 @@ package sh.damon.stackmob.entity;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.text.Text;
+import sh.damon.stackmob.util.EntityHelper;
 
 import java.util.Objects;
 
@@ -18,7 +19,7 @@ public class StackEntity {
     }
 
     public LivingEntity duplicate() {
-        return (LivingEntity) this.owner.getType().create(this.owner.getWorld());
+        return EntityHelper.createNewEntity(this.owner);
     }
 
     public LivingEntity getEntity() {
