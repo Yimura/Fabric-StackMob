@@ -2,12 +2,14 @@ package sh.damon.stackmob.entity;
 
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.text.Text;
+import sh.damon.stackmob.StackMob;
 import sh.damon.stackmob.util.EntityHelper;
 
 import java.util.Objects;
 
 public class StackEntity {
     protected final LivingEntity owner;
+    private final StackMob sm;
 
     private final int maxSize = 2048;
     private int size = 1;
@@ -15,6 +17,7 @@ public class StackEntity {
     private boolean removed = false;
 
     public StackEntity(LivingEntity entity) {
+        this.sm = StackMob.getInstance();
         this.owner = entity;
     }
 
@@ -31,7 +34,7 @@ public class StackEntity {
     }
 
     public String getName() {
-        return Objects.requireNonNull(this.owner.getDisplayName()).getString();
+        return Objects.requireNonNull(this.owner.getType().getName()).getString();
     }
 
     public int getSize() {
@@ -77,5 +80,25 @@ public class StackEntity {
 
     public void setRemoved() {
         this.removed = true;
+    }
+
+    public StackEntity slice(int amount) {
+        LivingEntity newEntity = duplicate();
+
+        sm.traitManager.applyTraits(newEntity, owner);
+        StackEntity newStackEntity = sm.entityManager.register(newEntity);
+        newStackEntity.setSize(getSize() - amount);
+        setSize(amount);
+
+        EntityHelper.spawnEntity(newEntity);
+
+        return newStackEntity;
+    }
+
+    public StackEntity splitIfNotEnough(int amount) {
+        if (getSize() > amount) {
+            return slice(amount);
+        }
+        return this;
     }
 }

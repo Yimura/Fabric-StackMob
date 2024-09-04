@@ -45,6 +45,7 @@ public class SheepEntityMixin {
 
         final int remainingDurability = itemStack.getMaxDamage() - itemStack.getDamage();
         final int maxAllowedShearage = Integer.min(remainingDurability, stackEntity.getSize());
+        stackEntity.splitIfNotEnough(maxAllowedShearage);
 
         if (itemStack.isOf(Items.SHEARS) && !sheep.getWorld().isClient && sheep.isShearable()) {
             SheepEntityMixin.shear(sheep, maxAllowedShearage);
