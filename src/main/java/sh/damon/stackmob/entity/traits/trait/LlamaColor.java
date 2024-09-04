@@ -6,20 +6,14 @@ import sh.damon.stackmob.entity.traits.Trait;
 import sh.damon.stackmob.entity.traits.TraitMetadata;
 
 @TraitMetadata(assignable = LlamaEntity.class, path = "llama-color")
-public class LlamaColor implements Trait {
+public class LlamaColor implements Trait<LlamaEntity> {
     @Override
-    public void applyTrait(LivingEntity spawned, LivingEntity dead) {
-        LlamaEntity spawnedLama = (LlamaEntity) spawned;
-        LlamaEntity deadLama = (LlamaEntity) dead;
-
-        spawnedLama.setVariant(deadLama.getVariant());
+    public void applyTrait(LlamaEntity spawned, LlamaEntity dead) {
+        spawned.setVariant(dead.getVariant());
     }
 
     @Override
-    public boolean checkTrait(LivingEntity first, LivingEntity second) {
-        LlamaEntity firstLama = (LlamaEntity) first;
-        LlamaEntity secondLama = (LlamaEntity) second;
-
-        return firstLama.getVariant() == secondLama.getVariant() && firstLama.getCarpetColor() == secondLama.getCarpetColor();
+    public boolean checkTrait(LlamaEntity first, LlamaEntity second) {
+        return first.getVariant() == second.getVariant() && first.getCarpetColor() == second.getCarpetColor();
     }
 }

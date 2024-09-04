@@ -6,14 +6,14 @@ import sh.damon.stackmob.entity.traits.Trait;
 import sh.damon.stackmob.entity.traits.TraitMetadata;
 
 @TraitMetadata(assignable = ParrotEntity.class, path = "parrot-variant")
-public class ParrotVariant implements Trait {
+public class ParrotVariant implements Trait<ParrotEntity> {
     @Override
-    public void applyTrait(LivingEntity spawned, LivingEntity dead) {
-        ((ParrotEntity) spawned).setVariant(((ParrotEntity) dead).getVariant());
+    public void applyTrait(ParrotEntity spawned, ParrotEntity dead) {
+        spawned.setVariant(dead.getVariant());
     }
 
     @Override
-    public boolean checkTrait(LivingEntity first, LivingEntity second) {
-        return ((ParrotEntity) first).getVariant() == ((ParrotEntity) second).getVariant();
+    public boolean checkTrait(ParrotEntity first, ParrotEntity second) {
+        return first.getVariant() == second.getVariant();
     }
 }

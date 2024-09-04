@@ -2,13 +2,13 @@ package sh.damon.stackmob.entity.traits;
 
 import net.minecraft.entity.LivingEntity;
 
-public interface Trait {
+public interface Trait<T extends LivingEntity> {
     /**
      * Copy the traits of the dead entity to that of the newly spawned entity.
      * @param spawned the entity that was spawned to replace it.
      * @param dead the entity that died.
      */
-    void applyTrait(LivingEntity spawned, LivingEntity dead);
+    void applyTrait(T spawned, T dead);
 
     /**
      * Check if two entities have the same entity specific traits (eg. sheep colour, villager profession)
@@ -16,5 +16,5 @@ public interface Trait {
      * @param second the other entity the first should stack with
      * @return whether these two entities should stack.
      */
-    boolean checkTrait(LivingEntity first, LivingEntity second);
+    boolean checkTrait(T first, T second);
 }

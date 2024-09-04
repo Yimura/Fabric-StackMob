@@ -7,17 +7,17 @@ import sh.damon.stackmob.entity.traits.Trait;
 import sh.damon.stackmob.entity.traits.TraitMetadata;
 
 @TraitMetadata(assignable = TurtleEntity.class, path = "turtle-has-egg")
-public class TurtleHasEgg implements Trait {
+public class TurtleHasEgg implements Trait<TurtleEntity> {
     @Override
-    public void applyTrait(LivingEntity spawned, LivingEntity dead) {
+    public void applyTrait(TurtleEntity spawned, TurtleEntity dead) {
         NbtCompound nbt = new NbtCompound();
 
-        ((TurtleEntity) dead).writeCustomDataToNbt(nbt);
-        ((TurtleEntity) spawned).readCustomDataFromNbt(nbt);
+        dead.writeCustomDataToNbt(nbt);
+        spawned.readCustomDataFromNbt(nbt);
     }
 
     @Override
-    public boolean checkTrait(LivingEntity first, LivingEntity second) {
-        return ((TurtleEntity) first).hasEgg() == ((TurtleEntity) second).hasEgg();
+    public boolean checkTrait(TurtleEntity first, TurtleEntity second) {
+        return first.hasEgg() == second.hasEgg();
     }
 }

@@ -6,14 +6,14 @@ import sh.damon.stackmob.entity.traits.Trait;
 import sh.damon.stackmob.entity.traits.TraitMetadata;
 
 @TraitMetadata(assignable = CatEntity.class, path = "cat-type")
-public class CatType  implements Trait {
+public class CatType  implements Trait<CatEntity> {
     @Override
-    public void applyTrait(LivingEntity spawned, LivingEntity dead) {
-        ((CatEntity) spawned).setVariant(((CatEntity) dead).getVariant());
+    public void applyTrait(CatEntity spawned, CatEntity dead) {
+        spawned.setVariant(dead.getVariant());
     }
 
     @Override
-    public boolean checkTrait(LivingEntity first, LivingEntity second) {
-        return ((CatEntity) first).getVariant() == ((CatEntity) second).getVariant();
+    public boolean checkTrait(CatEntity first, CatEntity second) {
+        return first.getVariant() == second.getVariant();
     }
 }

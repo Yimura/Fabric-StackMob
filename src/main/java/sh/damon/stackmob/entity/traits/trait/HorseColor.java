@@ -7,21 +7,18 @@ import sh.damon.stackmob.entity.traits.Trait;
 import sh.damon.stackmob.entity.traits.TraitMetadata;
 
 @TraitMetadata(assignable = HorseEntity.class, path = "horse-color")
-public class HorseColor implements Trait {
+public class HorseColor implements Trait<HorseEntity> {
     @Override
-    public void applyTrait(LivingEntity spawned, LivingEntity dead) {
+    public void applyTrait(HorseEntity spawned, HorseEntity dead) {
         NbtCompound nbt = new NbtCompound();
 
-        ((HorseEntity) dead).writeCustomDataToNbt(nbt);
-        ((HorseEntity) spawned).readCustomDataFromNbt(nbt);
+        dead.writeCustomDataToNbt(nbt);
+        spawned.readCustomDataFromNbt(nbt);
     }
 
     @Override
-    public boolean checkTrait(LivingEntity first, LivingEntity second) {
-        HorseEntity firstHorse = (HorseEntity) first;
-        HorseEntity secondHorse = (HorseEntity) second;
-
-        return firstHorse.getVariant() == secondHorse.getVariant() &&
-                firstHorse.getBodyArmor().equals(secondHorse.getBodyArmor());
+    public boolean checkTrait(HorseEntity first, HorseEntity second) {
+        return first.getVariant() == second.getVariant() &&
+                first.getBodyArmor().equals(second.getBodyArmor());
     }
 }

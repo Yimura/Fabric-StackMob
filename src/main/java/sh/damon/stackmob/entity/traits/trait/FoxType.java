@@ -7,17 +7,17 @@ import sh.damon.stackmob.entity.traits.Trait;
 import sh.damon.stackmob.entity.traits.TraitMetadata;
 
 @TraitMetadata(assignable = FoxEntity.class, path = "fox-type")
-public class FoxType implements Trait {
+public class FoxType implements Trait<FoxEntity> {
     @Override
-    public void applyTrait(LivingEntity spawned, LivingEntity dead) {
+    public void applyTrait(FoxEntity spawned, FoxEntity dead) {
         NbtCompound nbt = new NbtCompound();
-        ((FoxEntity) dead).writeCustomDataToNbt(nbt);
+        dead.writeCustomDataToNbt(nbt);
 
-        ((FoxEntity) spawned).readCustomDataFromNbt(nbt);
+        spawned.readCustomDataFromNbt(nbt);
     }
 
     @Override
-    public boolean checkTrait(LivingEntity first, LivingEntity second) {
-        return ((FoxEntity) first).getVariant() == ((FoxEntity) second).getVariant();
+    public boolean checkTrait(FoxEntity first, FoxEntity second) {
+        return first.getVariant() == second.getVariant();
     }
 }

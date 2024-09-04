@@ -6,19 +6,16 @@ import sh.damon.stackmob.entity.traits.Trait;
 import sh.damon.stackmob.entity.traits.TraitMetadata;
 
 @TraitMetadata(assignable = MobEntity.class, path = "leash")
-public class Leash implements Trait {
+public class Leash implements Trait<MobEntity> {
     @Override
-    public void applyTrait(LivingEntity spawned, LivingEntity dead) {
-        if (((MobEntity) dead).isLeashed())
+    public void applyTrait(MobEntity spawned, MobEntity dead) {
+        if (dead.isLeashed())
             return;
-        ((MobEntity) spawned).attachLeash(((MobEntity) dead).getLeashHolder(), true);
+        spawned.attachLeash(dead.getLeashHolder(), true);
     }
 
     @Override
-    public boolean checkTrait(LivingEntity first, LivingEntity second) {
-        MobEntity firstMob = (MobEntity) first;
-        MobEntity secondMob = (MobEntity) second;
-
-        return firstMob.isLeashed() == secondMob.isLeashed() || (firstMob.isLeashed() && secondMob.isLeashed() && firstMob.getLeashHolder() == secondMob.getLeashHolder());
+    public boolean checkTrait(MobEntity first, MobEntity second) {
+        return first.isLeashed() == second.isLeashed() || (first.isLeashed() && second.isLeashed() && first.getLeashHolder() == second.getLeashHolder());
     }
 }

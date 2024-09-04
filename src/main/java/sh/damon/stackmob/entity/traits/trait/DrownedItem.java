@@ -13,31 +13,26 @@ import java.util.Arrays;
 import java.util.List;
 
 @TraitMetadata(assignable = DrownedEntity.class, path = "drowned-hand-items")
-public class DrownedItem implements Trait {
-    private static List<EquipmentSlot> HAND_SLOTS = Arrays.asList(EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND);
-    private static List<Item> DROWNED_MATERIALS = Arrays.asList(Items.NAUTILUS_SHELL, Items.TRIDENT);
+public class DrownedItem implements Trait<DrownedEntity> {
+    private static final List<EquipmentSlot> HAND_SLOTS = Arrays.asList(EquipmentSlot.MAINHAND, EquipmentSlot.OFFHAND);
+    private static final List<Item> DROWNED_MATERIALS = Arrays.asList(Items.NAUTILUS_SHELL, Items.TRIDENT);
 
     @Override
-    public void applyTrait(LivingEntity spawned, LivingEntity dead) {
-        DrownedEntity oriDrowned = (DrownedEntity) dead;
-        DrownedEntity spawnDrowned = (DrownedEntity) spawned;
+    public void applyTrait(DrownedEntity spawned, DrownedEntity dead) {
         for (EquipmentSlot equipmentSlot : HAND_SLOTS) {
-            ItemStack item = oriDrowned.getEquippedStack(equipmentSlot);
+            ItemStack item = dead.getEquippedStack(equipmentSlot);
 
             if (DROWNED_MATERIALS.contains(item.getItem())) {
-                spawnDrowned.equipStack(equipmentSlot, item);
+                spawned.equipStack(equipmentSlot, item);
             }
         }
     }
 
     @Override
-    public boolean checkTrait(LivingEntity first, LivingEntity second) {
-        DrownedEntity oldDrowned = (DrownedEntity) first;
-        DrownedEntity newDrowned = (DrownedEntity) second;
-
+    public boolean checkTrait(DrownedEntity first, DrownedEntity second) {
         for (EquipmentSlot equipmentSlot : HAND_SLOTS) {
-            ItemStack oldItemStack = oldDrowned.getEquippedStack(equipmentSlot);
-            ItemStack newItemStack = newDrowned.getEquippedStack(equipmentSlot);
+            ItemStack oldItemStack = first.getEquippedStack(equipmentSlot);
+            ItemStack newItemStack = second.getEquippedStack(equipmentSlot);
 
             if (!oldItemStack.equals(newItemStack)) continue;
 
