@@ -1,10 +1,11 @@
 package sh.damon.stackmob;
 
 import net.fabricmc.api.ModInitializer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sh.damon.stackmob.command.CommandManager;
 import sh.damon.stackmob.entity.EntityManager;
 import sh.damon.stackmob.entity.traits.TraitManager;
-import sh.damon.stackmob.util.Log;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -16,7 +17,7 @@ public class StackMob implements ModInitializer {
 	public final EntityManager entityManager = new EntityManager();
 	public final TraitManager traitManager = new TraitManager();
 
-	public static Log log = new Log(MOD_NAME);
+	private final static Logger LOGGER = LoggerFactory.getLogger(StackMob.class);
 
 	private static StackMob instance;
 
@@ -29,10 +30,10 @@ public class StackMob implements ModInitializer {
 		try {
 			this.traitManager.registerAll();
 		} catch (InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException e) {
-			e.printStackTrace();
+			LOGGER.error("Exception occurred while trying to register entity traits: {}", e.getMessage());
 		}
 
-		StackMob.log.info( "Mod is ready.");
+		LOGGER.info( "Mod is ready.");
 	}
 
 	public static StackMob getInstance() {

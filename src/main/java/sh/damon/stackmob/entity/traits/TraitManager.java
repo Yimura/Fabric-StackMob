@@ -1,6 +1,8 @@
 package sh.damon.stackmob.entity.traits;
 
 import net.minecraft.entity.LivingEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sh.damon.stackmob.StackMob;
 import sh.damon.stackmob.entity.StackEntity;
 import sh.damon.stackmob.entity.traits.trait.*;
@@ -10,6 +12,7 @@ import java.util.HashSet;
 
 public class TraitManager {
     private final HashSet<Trait> traits;
+    private final Logger LOGGER = LoggerFactory.getLogger(TraitManager.class);
 
     public TraitManager() {
         this.traits = new HashSet<>();
@@ -30,7 +33,7 @@ public class TraitManager {
     public boolean checkTraits(StackEntity first, StackEntity second) {
         for (Trait trait : this.traits) {
             if (this.isTraitApplicable(trait, first.getEntity()) && !trait.checkTrait(first.getEntity(), second.getEntity())) {
-                StackMob.log.info("Failed trait check for: "+ trait.getClass().getAnnotation(TraitMetadata.class).path());
+                LOGGER.warn("Failed trait check for: {}", trait.getClass().getAnnotation(TraitMetadata.class).path());
 
                 return false;
             }
@@ -72,6 +75,6 @@ public class TraitManager {
 
         this.traits.add(trait.getDeclaredConstructor().newInstance());
 
-        StackMob.log.info("Registered trait: "+ metadata.path());
+        LOGGER.info("Registered trait: {}", metadata.path());
     }
 }
