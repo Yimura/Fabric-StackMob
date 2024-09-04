@@ -1,5 +1,8 @@
 # Fabric StackMob
 
+![MC Version](https://img.shields.io/badge/Minecraft%20Version-1.21.1-limegreen?style=flat-square) ![Mod Version](https://img.shields.io/badge/Mod%20Version-Alpha-red?style=flat-square)
+
+
 This is a port of [StackMob-5](https://github.com/Nathat23/StackMob-5) SpigotPlugin to Fabric.
 
 # Features
