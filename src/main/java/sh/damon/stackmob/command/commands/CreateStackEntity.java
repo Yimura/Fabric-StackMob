@@ -8,6 +8,7 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.NbtCompoundArgumentType;
 import net.minecraft.command.argument.RegistryEntryReferenceArgumentType;
+import net.minecraft.command.argument.Vec3ArgumentType;
 import net.minecraft.command.suggestion.SuggestionProviders;
 import net.minecraft.entity.*;
 import net.minecraft.entity.mob.MobEntity;
@@ -34,12 +35,16 @@ public class CreateStackEntity implements ICommand {
     @Override
     public void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, boolean isDedicated) {
         dispatcher.register(
-            literal("sm").then(literal("create").then(
-                argument("type", RegistryEntryReferenceArgumentType.registryEntry(registryAccess, RegistryKeys.ENTITY_TYPE))
-                .suggests(SuggestionProviders.SUMMONABLE_ENTITIES).then(
-                    argument("stack_size", integer(2, 2048)).executes(this)
+            literal("sm").then(literal("create")
+                .then(argument("type", RegistryEntryReferenceArgumentType.registryEntry(registryAccess, RegistryKeys.ENTITY_TYPE))
+                    .suggests(SuggestionProviders.SUMMONABLE_ENTITIES)
+                        .then(argument("stack_size", integer(2, 2048))
+                            .then(argument("coords", Vec3ArgumentType.vec3())
+                                .executes(this)
+                            )
+                    )
                 )
-            ))
+            )
         );
 
         dispatcher.register(
@@ -57,6 +62,8 @@ public class CreateStackEntity implements ICommand {
     @Override
     public int run(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         RegistryEntry.Reference<EntityType<?>> entityType = RegistryEntryReferenceArgumentType.getSummonableEntityType(context, "type");
+        final ServerCommandSource source = context.getSource();
+        final ServerWorld world = source.getWorld();
 
         NbtCompound nbt;
         try {
@@ -67,11 +74,15 @@ public class CreateStackEntity implements ICommand {
         }
         nbt.putString("id", entityType.registryKey().getValue().toString());
 
-        final ServerCommandSource source = context.getSource();
-        final ServerWorld world = source.getWorld();
+        Vec3d coords;
+        try {
+            coords = Vec3ArgumentType.getPosArgument(context, "coords").toAbsolutePos(source);
+        } catch (IllegalArgumentException e) {
+            // get position of the player that requested the stackmob
+            coords = source.getPosition();
+        }
 
-        // get position of the player that requested the stackmob
-        final Vec3d spawnPos = source.getPosition();
+        final Vec3d spawnPos = coords; // convert to final to stop lambda from complaining
 
         Entity entity = EntityType.loadEntityWithPassengers(nbt, world, ent -> {
             ent.refreshPositionAndAngles(spawnPos, ent.getYaw(), ent.getPitch());
