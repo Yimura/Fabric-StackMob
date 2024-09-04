@@ -23,6 +23,7 @@ import org.apache.logging.log4j.Logger;
 import sh.damon.stackmob.StackMob;
 import sh.damon.stackmob.command.ICommand;
 import sh.damon.stackmob.entity.StackEntity;
+import sh.damon.stackmob.util.CommandUtil;
 import sh.damon.stackmob.util.EntityHelper;
 
 import static com.mojang.brigadier.arguments.IntegerArgumentType.getInteger;
@@ -39,24 +40,13 @@ public class CreateStackEntity implements ICommand {
             literal("sm").then(literal("create")
                 .then(argument("type", RegistryEntryReferenceArgumentType.registryEntry(registryAccess, RegistryKeys.ENTITY_TYPE))
                     .suggests(SuggestionProviders.SUMMONABLE_ENTITIES)
-                        .then(argument("stack_size", integer(2, 2048))
-                            .then(argument("coords", Vec3ArgumentType.vec3())
-                                .executes(this)
+                        .then(argument("stack_size", integer(2, 2048)).executes(this)
+                            .then(argument("coords", Vec3ArgumentType.vec3()).executes(this)
+                                .then(argument("nbt", NbtCompoundArgumentType.nbtCompound()).executes(this))
                             )
                     )
                 )
             )
-        );
-
-        dispatcher.register(
-            literal("sm").then(literal("create").then(
-                argument("type", RegistryEntryReferenceArgumentType.registryEntry(registryAccess, RegistryKeys.ENTITY_TYPE))
-                .suggests(SuggestionProviders.SUMMONABLE_ENTITIES).then(
-                    argument("stack_size", integer(2, 2048)).then(
-                        argument("nbt", NbtCompoundArgumentType.nbtCompound()).executes(this)
-                    )
-                )
-            ))
         );
     }
 
@@ -66,24 +56,9 @@ public class CreateStackEntity implements ICommand {
         final ServerCommandSource source = context.getSource();
         final ServerWorld world = source.getWorld();
 
-        Vec3d coords;
-        try {
-            coords = Vec3ArgumentType.getPosArgument(context, "coords").toAbsolutePos(source);
-        } catch (IllegalArgumentException e) {
-            // get position of the player that requested the stackmob
-            coords = source.getPosition();
-        }
-
-        NbtCompound nbt;
-        try {
-            nbt = NbtCompoundArgumentType.getNbtCompound(context,"nbt");
-        }
-        catch (IllegalArgumentException e) {
-            nbt = new NbtCompound();
-        }
+        final Vec3d spawnPos = CommandUtil.tryGet(() -> Vec3ArgumentType.getPosArgument(context, "coords").toAbsolutePos(source), source::getPosition);
+        final NbtCompound nbt = CommandUtil.tryGet(() -> NbtCompoundArgumentType.getNbtCompound(context,"nbt"), NbtCompound::new);
         nbt.putString("id", entityType.registryKey().getValue().toString());
-
-        final Vec3d spawnPos = coords; // convert to final to stop lambda from complaining
 
         LivingEntity entity = EntityHelper.createNewEntity(world, entityType.registryKey().getValue(), spawnPos, nbt);
 
