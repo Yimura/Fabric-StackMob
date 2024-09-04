@@ -3,7 +3,6 @@ package sh.damon.stackmob.entity.traits;
 import net.minecraft.entity.LivingEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sh.damon.stackmob.StackMob;
 import sh.damon.stackmob.entity.StackEntity;
 import sh.damon.stackmob.entity.traits.trait.*;
 
@@ -11,14 +10,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 
 public class TraitManager {
-    private final HashSet<Trait> traits;
+    private final HashSet<Trait<? extends LivingEntity>> traits;
     private final Logger LOGGER = LoggerFactory.getLogger(TraitManager.class);
 
     public TraitManager() {
         this.traits = new HashSet<>();
     }
 
-    public void applyTraits(LivingEntity spawned, LivingEntity dead) {
+    public <T extends LivingEntity> void applyTraits(T spawned, T dead) {
         for (Trait trait : this.traits)
             if (this.isTraitApplicable(trait, spawned))
                 trait.applyTrait(spawned, dead);
@@ -30,7 +29,7 @@ public class TraitManager {
      * @param second Second Entity
      * @return Boolean true if all checks passed, false if a trait mismatch occurred.
      */
-    public boolean checkTraits(StackEntity first, StackEntity second) {
+    public <T extends LivingEntity> boolean checkTraits(StackEntity first, StackEntity second) {
         for (Trait trait : this.traits) {
             if (this.isTraitApplicable(trait, first.getEntity()) && !trait.checkTrait(first.getEntity(), second.getEntity())) {
                 LOGGER.warn("Failed trait check for: {}", trait.getClass().getAnnotation(TraitMetadata.class).path());
@@ -64,7 +63,7 @@ public class TraitManager {
         this.register(ZombieBaby.class);
     }
 
-    private boolean isTraitApplicable(Trait trait, LivingEntity entity) {
+    private <T extends LivingEntity> boolean isTraitApplicable(Trait<? extends LivingEntity> trait, T entity) {
         final TraitMetadata metadata = trait.getClass().getAnnotation(TraitMetadata.class);
 
         return metadata.assignable().isAssignableFrom(entity.getClass());

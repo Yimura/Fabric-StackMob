@@ -6,14 +6,14 @@ import sh.damon.stackmob.entity.traits.Trait;
 import sh.damon.stackmob.entity.traits.TraitMetadata;
 
 @TraitMetadata(assignable = PiglinEntity.class, path = "piglin-baby")
-public class PiglinBaby implements Trait {
+public class PiglinBaby implements Trait<PiglinEntity> {
     @Override
-    public void applyTrait(LivingEntity spawned, LivingEntity dead) {
-        ((PiglinEntity) spawned).setBaby(((PiglinEntity) dead).isBaby());
+    public void applyTrait(PiglinEntity spawned, PiglinEntity dead) {
+        spawned.setBaby(dead.isBaby());
     }
 
     @Override
-    public boolean checkTrait(LivingEntity first, LivingEntity second) {
-        return ((PiglinEntity) first).isBaby() == ((PiglinEntity) second).isBaby();
+    public boolean checkTrait(PiglinEntity first, PiglinEntity second) {
+        return first.isBaby() == second.isBaby();
     }
 }

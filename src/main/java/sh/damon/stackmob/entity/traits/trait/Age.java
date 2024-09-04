@@ -1,14 +1,15 @@
 package sh.damon.stackmob.entity.traits.trait;
 
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.passive.AnimalEntity;
 import sh.damon.stackmob.entity.traits.Trait;
 import sh.damon.stackmob.entity.traits.TraitMetadata;
 
-@TraitMetadata(assignable = LivingEntity.class, path = "age")
-public class Age implements Trait {
+@TraitMetadata(assignable = AnimalEntity.class, path = "age")
+public class Age implements Trait<AnimalEntity> {
     @Override
-    public void applyTrait(LivingEntity spawned, LivingEntity dead) {
-        spawned.age = dead.age;
+    public void applyTrait(AnimalEntity spawned, AnimalEntity dead) {
+        spawned.setBreedingAge(dead.getBreedingAge());
     }
 
     /**
@@ -18,7 +19,7 @@ public class Age implements Trait {
      * @return True if they're both adult or both baby
      */
     @Override
-    public boolean checkTrait(LivingEntity first, LivingEntity second) {
-        return (first.age >= 0) == (second.age >= 0);
+    public boolean checkTrait(AnimalEntity first, AnimalEntity second) {
+        return (first.isBaby()) == (second.isBaby());
     }
 }

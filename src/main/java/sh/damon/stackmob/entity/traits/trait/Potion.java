@@ -7,7 +7,7 @@ import sh.damon.stackmob.entity.traits.Trait;
 import sh.damon.stackmob.entity.traits.TraitMetadata;
 
 @TraitMetadata(assignable = LivingEntity.class, path = "potion-effect")
-public class Potion implements Trait {
+public class Potion implements Trait<LivingEntity> {
     @Override
     public void applyTrait(LivingEntity spawned, LivingEntity dead) {
         for (StatusEffectInstance effect : dead.getActiveStatusEffects().values())

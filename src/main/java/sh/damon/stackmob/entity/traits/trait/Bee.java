@@ -7,17 +7,17 @@ import sh.damon.stackmob.entity.traits.Trait;
 import sh.damon.stackmob.entity.traits.TraitMetadata;
 
 @TraitMetadata(assignable = BeeEntity.class, path = "bee")
-public class Bee implements Trait {
+public class Bee implements Trait<BeeEntity> {
     @Override
-    public void applyTrait(LivingEntity spawned, LivingEntity dead) {
+    public void applyTrait(BeeEntity spawned, BeeEntity dead) {
         NbtCompound nbt = new NbtCompound();
-        ((BeeEntity) dead).writeCustomDataToNbt(nbt);
+        dead.writeCustomDataToNbt(nbt);
 
-        ((BeeEntity) spawned).readCustomDataFromNbt(nbt);
+        spawned.readCustomDataFromNbt(nbt);
     }
 
     @Override
-    public boolean checkTrait(LivingEntity first, LivingEntity second) {
-        return ((BeeEntity) first).hasNectar() == ((BeeEntity) second).hasNectar();
+    public boolean checkTrait(BeeEntity first, BeeEntity second) {
+        return first.hasNectar() == second.hasNectar();
     }
 }

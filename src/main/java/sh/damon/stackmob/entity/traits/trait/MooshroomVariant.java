@@ -7,17 +7,17 @@ import sh.damon.stackmob.entity.traits.Trait;
 import sh.damon.stackmob.entity.traits.TraitMetadata;
 
 @TraitMetadata(assignable = MooshroomEntity.class, path = "mooshroom-variant")
-public class MooshroomVariant implements Trait {
+public class MooshroomVariant implements Trait<MooshroomEntity> {
     @Override
-    public void applyTrait(LivingEntity spawned, LivingEntity dead) {
+    public void applyTrait(MooshroomEntity spawned, MooshroomEntity dead) {
         NbtCompound nbt = new NbtCompound();
 
-        ((MooshroomEntity) dead).writeCustomDataToNbt(nbt);
-        ((MooshroomEntity) spawned).readCustomDataFromNbt(nbt);
+        dead.writeCustomDataToNbt(nbt);
+        spawned.readCustomDataFromNbt(nbt);
     }
 
     @Override
-    public boolean checkTrait(LivingEntity first, LivingEntity second) {
-        return ((MooshroomEntity) first).getVariant() == ((MooshroomEntity) second).getVariant();
+    public boolean checkTrait(MooshroomEntity first, MooshroomEntity second) {
+        return first.getVariant() == second.getVariant();
     }
 }

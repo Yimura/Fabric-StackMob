@@ -7,17 +7,17 @@ import sh.damon.stackmob.entity.traits.Trait;
 import sh.damon.stackmob.entity.traits.TraitMetadata;
 
 @TraitMetadata(assignable = SlimeEntity.class, path = "slime-size")
-public class SlimeSize implements Trait {
+public class SlimeSize implements Trait<SlimeEntity> {
     @Override
-    public void applyTrait(LivingEntity spawned, LivingEntity dead) {
+    public void applyTrait(SlimeEntity spawned, SlimeEntity dead) {
         NbtCompound nbt = new NbtCompound();
 
-        ((SlimeEntity) dead).writeCustomDataToNbt(nbt);
-        ((SlimeEntity) spawned).readCustomDataFromNbt(nbt);
+        dead.writeCustomDataToNbt(nbt);
+        spawned.readCustomDataFromNbt(nbt);
     }
 
     @Override
-    public boolean checkTrait(LivingEntity first, LivingEntity second) {
-        return ((SlimeEntity) first).getSize() == ((SlimeEntity) second).getSize();
+    public boolean checkTrait(SlimeEntity first, SlimeEntity second) {
+        return first.getSize() == second.getSize();
     }
 }

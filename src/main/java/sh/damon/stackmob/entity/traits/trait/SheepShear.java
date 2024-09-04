@@ -6,14 +6,14 @@ import sh.damon.stackmob.entity.traits.Trait;
 import sh.damon.stackmob.entity.traits.TraitMetadata;
 
 @TraitMetadata(assignable = SheepEntity.class, path = "sheep-sheared")
-public class SheepShear implements Trait {
+public class SheepShear implements Trait<SheepEntity> {
     @Override
-    public void applyTrait(LivingEntity spawned, LivingEntity dead) {
-        ((SheepEntity) spawned).setSheared(((SheepEntity) dead).isSheared());
+    public void applyTrait(SheepEntity spawned, SheepEntity dead) {
+        spawned.setSheared(dead.isSheared());
     }
 
     @Override
-    public boolean checkTrait(LivingEntity first, LivingEntity second) {
-        return ((SheepEntity) first).isSheared() == ((SheepEntity) second).isSheared();
+    public boolean checkTrait(SheepEntity first, SheepEntity second) {
+        return first.isSheared() == second.isSheared();
     }
 }
