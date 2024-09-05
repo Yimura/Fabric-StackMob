@@ -65,9 +65,6 @@ public class CreateStackEntity implements ICommand {
         if (entity == null)
             throw new SimpleCommandExceptionType(new LiteralMessage("Failed to create entity")).create();
 
-        if (!EntityHelper.spawnEntity(entity))
-            throw new SimpleCommandExceptionType(new LiteralMessage("Failed to create entity, UUID duplicate in registry.")).create();
-
         final StackMob sm = StackMob.getInstance();
         StackEntity stackEntity;
         if (sm.entityManager.isRegistered(entity))
@@ -75,10 +72,12 @@ public class CreateStackEntity implements ICommand {
         else
             stackEntity = sm.entityManager.register(entity);
 
+        if (!EntityHelper.spawnEntity(entity))
+            throw new SimpleCommandExceptionType(new LiteralMessage("Failed to create entity, UUID duplicate in registry.")).create();
+
         int size = getInteger(context, "stack_size");
         if (size < 1 || size > stackEntity.getMaxSize())
             throw new SimpleCommandExceptionType(new LiteralMessage("Stack size is large than the maximum stack size or smaller than 1.")).create();
-
         stackEntity.setSize(size);
 
         return SINGLE_SUCCESS;
