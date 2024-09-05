@@ -29,9 +29,9 @@ public class CreeperEntityMixin {
 
         sm.traitManager.applyTraits(spawned, died);
 
-        if (EntityHelper.spawnEntity(spawned)) {
-            stackEntity = sm.entityManager.register(spawned);
-            stackEntity.setSize(size - 1);
-        }
+        stackEntity = sm.entityManager.register(spawned);
+        stackEntity.setSize(size - 1);
+
+        EntityHelper.spawnEntity(spawned);
     }
 }

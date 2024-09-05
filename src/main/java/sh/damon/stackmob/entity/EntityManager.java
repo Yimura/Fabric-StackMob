@@ -19,6 +19,10 @@ public class EntityManager {
         return this.entities.get(entity.getUuid());
     }
 
+    public StackEntity getOrRegister(LivingEntity entity) {
+        return this.entities.containsKey(entity.getUuid()) ? getStackedEntity(entity) : register(entity);
+    }
+
     public boolean isRegistered(LivingEntity ent) {
         return this.entities.containsKey(ent.getUuid());
     }
@@ -26,8 +30,6 @@ public class EntityManager {
     public StackEntity register(LivingEntity entity) {
         StackEntity stackEntity = new StackEntity(entity);
         entities.put(entity.getUuid(), stackEntity);
-
-//        StackMob.log.info("Registered new StackEntity: " + entity.getUuidAsString());
 
         return stackEntity;
     }
@@ -40,8 +42,6 @@ public class EntityManager {
         LivingEntity entity = stackEntity.getEntity();
 
         this.entities.remove(entity.getUuid());
-
-//        StackMob.log.info("Removed StackEntity: " + entity.getUuidAsString());
 
         return entity;
     }

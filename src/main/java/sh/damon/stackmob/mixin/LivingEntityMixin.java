@@ -26,16 +26,15 @@ public class LivingEntityMixin {
         sm.entityManager.unregisterStackedEntity(stackEntity);
 
         int size = stackEntity.getSize();
-        if (size == 1) return;
+        if (size <= 1) return;
 
         LivingEntity spawned = stackEntity.duplicate();
 
         sm.traitManager.applyTraits(spawned, died);
+        stackEntity = sm.entityManager.register(spawned);
+        stackEntity.setSize(size - 1);
 
-        if (EntityHelper.spawnEntity(spawned)) {
-            stackEntity = sm.entityManager.register(spawned);
-            stackEntity.setSize(size - 1);
-        }
+        EntityHelper.spawnEntity(spawned);
     }
 
     @Inject(at = @At("RETURN"), method = "readCustomDataFromNbt")
