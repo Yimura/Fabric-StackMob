@@ -1,10 +1,8 @@
 package sh.damon.stackmob.command.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.LiteralMessage;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.entity.Entity;
@@ -15,6 +13,8 @@ import net.minecraft.text.Text;
 import sh.damon.stackmob.StackMob;
 import sh.damon.stackmob.command.ICommand;
 
+import java.util.Collection;
+
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
@@ -22,26 +22,33 @@ public class KillStackedEntity implements ICommand {
     @Override
     public void register(CommandDispatcher<ServerCommandSource> dispatcher, CommandRegistryAccess registryAccess, boolean isDedicated) {
         dispatcher.register(
-            literal("sm").then(literal("kill").then(argument("target", EntityArgumentType.entity()).executes(this)))
-        );
+            literal("sm")
+                .then(literal("kill")
+                    .then(argument("targets", EntityArgumentType.entities()).executes(this))
+                )
+            );
     }
 
     @Override
     public int run(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        Entity ent = EntityArgumentType.getEntity(context, "target");
-        if (!(ent instanceof LivingEntity)) throw new SimpleCommandExceptionType(new LiteralMessage("Invalid entity")).create();
+        Collection<? extends Entity> entities = EntityArgumentType.getEntities(context, "targets");
 
-        StackMob sm = StackMob.getInstance();
+        final StackMob sm = StackMob.getInstance();
+        for (Entity ent : entities) {
+            if (!(ent instanceof LivingEntity))
+                continue;
 
-        if (!sm.entityManager.isRegistered((LivingEntity) ent)) throw new SimpleCommandExceptionType(new LiteralMessage("Entity is not a StackEntity.")).create();
+            if (!sm.entityManager.isRegistered((LivingEntity) ent))
+                continue;
 
-        sm.entityManager.unregisterStackedEntity(
-            sm.entityManager.getStackedEntity((LivingEntity) ent)
-        );
-        ent.kill();
+            sm.entityManager.unregisterStackedEntity(
+                    sm.entityManager.getStackedEntity((LivingEntity) ent)
+            );
+            ent.kill();
+        }
 
-        context.getSource().sendFeedback(() -> Text.literal("Successfully remove stack entity."), false);
+        context.getSource().sendFeedback(() -> Text.literal("Successfully remove stacked entities."), false);
 
-        return 0;
+        return SINGLE_SUCCESS;
     }
 }
