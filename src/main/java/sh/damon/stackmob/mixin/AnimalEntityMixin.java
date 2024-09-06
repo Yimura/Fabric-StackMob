@@ -29,7 +29,13 @@ public class AnimalEntityMixin {
         if (!sm.entityManager.isRegistered(animal)) return;
 
         StackEntity parent = sm.entityManager.getStackedEntity(animal);
-        int kids = Math.min(parent.getSize(), stack.getCount()) / 2;
+        int kids;
+        if (!player.isCreative())
+            kids = Math.min(parent.getSize(), stack.getCount()) / 2;
+        else
+            kids = parent.getSize() / 2;
+
+        if (kids <= 0) return;
         stack.setCount(stack.getCount() - kids * 2);
 
         animal.getWorld().sendEntityStatus(animal, (byte)18);
