@@ -11,7 +11,6 @@ import net.minecraft.command.argument.RegistryEntryReferenceArgumentType;
 import net.minecraft.command.argument.Vec3ArgumentType;
 import net.minecraft.command.suggestion.SuggestionProviders;
 import net.minecraft.entity.*;
-import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.RegistryKeys;
 import net.minecraft.registry.entry.RegistryEntry;
