@@ -17,10 +17,11 @@ public class TraitManager {
         this.traits = new HashSet<>();
     }
 
-    public <T extends LivingEntity> void applyTraits(T spawned, T dead) {
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public <T extends LivingEntity> void applyTraits(T to, T from) {
         for (Trait trait : this.traits)
-            if (this.isTraitApplicable(trait, spawned))
-                trait.applyTrait(spawned, dead);
+            if (this.isTraitApplicable(trait, to))
+                trait.applyTrait(to, from);
     }
 
     /**
@@ -29,7 +30,8 @@ public class TraitManager {
      * @param second Second Entity
      * @return Boolean true if all checks passed, false if a trait mismatch occurred.
      */
-    public <T extends LivingEntity> boolean checkTraits(StackEntity first, StackEntity second) {
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public boolean checkTraits(StackEntity first, StackEntity second) {
         for (Trait trait : this.traits) {
             if (this.isTraitApplicable(trait, first.getEntity()) && !trait.checkTrait(first.getEntity(), second.getEntity())) {
                 LOGGER.warn("Failed trait check for: {}", trait.getClass().getAnnotation(TraitMetadata.class).path());
@@ -69,6 +71,7 @@ public class TraitManager {
         return metadata.assignable().isAssignableFrom(entity.getClass());
     }
 
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     private void register(Class<? extends Trait> trait) throws NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         final TraitMetadata metadata = trait.getAnnotation(TraitMetadata.class);
 
