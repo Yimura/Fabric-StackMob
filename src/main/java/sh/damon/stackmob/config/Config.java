@@ -9,7 +9,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.ArrayList;
 
 public class Config {
     private static final EntityConfigSerializer EntityConfigSerializer = new EntityConfigSerializer();
@@ -20,10 +20,10 @@ public class Config {
 
     public boolean stackingEnabled = true;
 
-    public HashMap<Identifier, EntityConfig> entityConfigs = new HashMap<>() {
+    public ArrayList<EntityConfig> entityConfigs = new ArrayList<>() {
         {
-            put(Identifier.of("minecraft", "sheep"), new EntityConfig(Identifier.of("minecraft", "sheep")));
-            put(Identifier.of("minecraft", "slime"), new SlimeConfig());
+            add(new EntityConfig(Identifier.of("minecraft", "sheep")));
+            add(new SlimeConfig());
         }
     };
 
@@ -55,15 +55,16 @@ public class Config {
     }
 
     public EntityConfig getConfigByIdentifier(Identifier identifier) {
-        var config = entityConfigs.get(identifier);
+        var config = entityConfigs.stream().filter(entityConfig -> entityConfig.entityId.equals(identifier)).findFirst();
 
-        if (config == null) {
-            config = new EntityConfig(identifier);
-            entityConfigs.put(identifier, config);
+        if (config.isEmpty()) {
+            var newConfig = new EntityConfig(identifier);
+            entityConfigs.add(newConfig);
             this.save();
+            return newConfig;
         }
 
-        return config;
+        return config.get();
     }
 
 }
