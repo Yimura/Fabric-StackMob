@@ -1,8 +1,8 @@
 package sh.damon.stackmob.entity;
 
-import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.registry.Registries;
+import net.minecraft.util.Identifier;
 import sh.damon.stackmob.StackMob;
 
 import java.util.HashMap;
@@ -28,7 +28,10 @@ public class EntityManager {
     }
 
     public StackEntity register(LivingEntity entity) {
-        StackEntity stackEntity = new StackEntity(entity);
+        Identifier identifier = Registries.ENTITY_TYPE.getId(entity.getType());
+        var entityConfig = StackMob.getInstance().getConfig().getConfigByIdentifier(identifier);
+
+        StackEntity stackEntity = new StackEntity(entity, entityConfig);
         entities.put(entity.getUuid(), stackEntity);
 
         return stackEntity;

@@ -8,7 +8,13 @@ public class EntityConfig {
     public boolean babyStacking = false;
     public int maxStackSize = 2048;
 
-    protected void setEntityId(Identifier entityId) {
+    public EntityConfig() {}
+
+    public EntityConfig(Identifier entityId) {
+        this.entityId = entityId;
+    }
+
+    public void setEntityId(Identifier entityId) {
         this.entityId = entityId;
     }
 }
