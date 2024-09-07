@@ -19,7 +19,7 @@ public class Config {
 
     public boolean stackingEnabled = true;
 
-    public ArrayList<? extends EntityConfig> entities = new ArrayList<>() { {
+    public ArrayList<? extends EntityConfig> entityConfigs = new ArrayList<>() { {
         add(new EntityConfig());
         add(new SlimeConfig());
     } };
