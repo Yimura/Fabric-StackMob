@@ -3,6 +3,7 @@ package sh.damon.stackmob.entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.text.Text;
 import sh.damon.stackmob.StackMob;
+import sh.damon.stackmob.config.EntityConfig;
 import sh.damon.stackmob.util.EntityHelper;
 
 import java.util.Objects;
@@ -11,14 +12,15 @@ public class StackEntity {
     protected final LivingEntity owner;
     private final StackMob sm;
 
-    private final int maxSize = 2048;
+    private final int maxSize;
     private int size = 1;
 
     private boolean removed = false;
 
-    public StackEntity(LivingEntity entity) {
+    public <T extends EntityConfig> StackEntity(LivingEntity entity, T config) {
         this.sm = StackMob.getInstance();
         this.owner = entity;
+        this.maxSize = config.maxStackSize;
     }
 
     public LivingEntity duplicate() {

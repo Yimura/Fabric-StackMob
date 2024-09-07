@@ -65,11 +65,8 @@ public class CreateStackEntity implements ICommand {
             throw new SimpleCommandExceptionType(new LiteralMessage("Failed to create entity")).create();
 
         final StackMob sm = StackMob.getInstance();
-        StackEntity stackEntity;
-        if (sm.entityManager.isRegistered(entity))
-            stackEntity = sm.entityManager.getStackedEntity(entity);
-        else
-            stackEntity = sm.entityManager.register(entity);
+
+        final StackEntity stackEntity = sm.entityManager.getOrRegister(entity);
 
         if (!EntityHelper.spawnEntity(entity))
             throw new SimpleCommandExceptionType(new LiteralMessage("Failed to create entity, UUID duplicate in registry.")).create();

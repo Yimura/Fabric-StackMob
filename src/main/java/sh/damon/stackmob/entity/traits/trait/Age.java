@@ -1,6 +1,5 @@
 package sh.damon.stackmob.entity.traits.trait;
 
-import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import sh.damon.stackmob.entity.traits.Trait;
 import sh.damon.stackmob.entity.traits.TraitMetadata;
